@@ -134,13 +134,11 @@ const RPGMultiplayerGame: React.FC = () => {
   const [gameConnection, setGameConnection] = useState<GameConnection | null>(null);
   const [keys, setKeys] = useState<Set<string>>(new Set());
   
-  // Canvas constants
   const CANVAS_WIDTH = 800;
   const CANVAS_HEIGHT = 400;
   const PLAYER_SIZE = 30;
   const MOVE_SPEED = 3;
 
-  // Initialize game connection
   useEffect(() => {
     const connection = new GameConnection();
     setGameConnection(connection);
