@@ -1,10 +1,22 @@
-import './App.css'
-import RPGMultiplayerGame from './simulation/rpg-multiplayer-game'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { PopUpProvider } from "./context/NotificationContext";
+import Landing from "./screen/landing";
+import ActifityScreen from "./screen/activity";
+import FinanceLeagueScreen from "./screen/fi-league";
+import W2EScreen from "./screen/work-to-earn";
 
-function App() {
+export default function App() {
+
   return (
-    <RPGMultiplayerGame />
+    <PopUpProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Landing />} index />
+          <Route path="/play" element={<ActifityScreen />} />
+          <Route path="/fi-leaguage" element={<FinanceLeagueScreen />} />
+          <Route path="/w2e" element={<W2EScreen />} />
+        </Routes>
+      </Router>
+    </PopUpProvider>
   )
 }
-
-export default App
