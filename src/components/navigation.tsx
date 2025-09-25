@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 export function Navigation() {
     return (
         <div className="px-8 py-5 flex items-center justify-between background-dark text-white">
@@ -6,17 +8,17 @@ export function Navigation() {
                 <div
                     className="cursor-pointer hover:text-gray-200"
                 >
-                    Play
+                    <Link to={"/play"}>Play</Link>
                 </div>
                 <div
                     className="cursor-pointer hover:text-gray-200"
                 >
-                    Fi-League
+                    <Link to={"/fi-leaguage"}>Fi-League</Link>
                 </div>
                 <div
                     className="cursor-pointer hover:text-gray-200"
                 >
-                    W2E
+                    <Link to={"/w2e"}>W2E</Link>
                 </div>
                 <div
                     className="bg-gray-700 p-2 md:px-3 rounded-md hover:bg-gray-400 cursor-pointer text-white"
