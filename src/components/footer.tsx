@@ -1,5 +1,4 @@
 import { Instagram, Store, Twitter } from "lucide-react"
-import { Link } from "react-router-dom"
 
 export function Footer() {
     return (
@@ -15,15 +14,9 @@ export function Footer() {
 
                 <div className="space-y-3">
                     <div>Godean Game Feature</div>
-                    <div className="text-gray-400 hover:text-white cursor-pointer">
-                        <Link to={"/play"}>Play</Link>
-                    </div>
-                    <div className="text-gray-400 hover:text-white cursor-pointer">
-                        <Link to={"/fi-leaguage"}>Fi-League</Link>
-                    </div>
-                    <div className="text-gray-400 hover:text-white cursor-pointer">
-                        <Link to={"/w2e"}>W2E</Link>
-                    </div>
+                    <p className="text-gray-400 hover:text-white cursor-pointer">Play</p>
+                    <p className="text-gray-400 hover:text-white cursor-pointer">Fi-League</p>
+                    <p className="text-gray-400 hover:text-white cursor-pointer">W2E</p>
                 </div>
 
                 <div className="space-y-3">

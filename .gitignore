@@ -7,32 +7,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Dependencies
-node_modules/
-
-# Build artifacts
-dist/
-dist-ssr/
-coverage/
-build/
-
-# Environment variables
-.env
-.env.*
-!.env.example # Allow example env file to be committed
+node_modules
+dist
+dist-ssr
+*.local
 
 # Editor directories and files
-.vscode/
-!.vscode/extensions.json # Optional: if you want to share recommended extensions
-.idea/
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-
-# Vite specific
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
-
-node_modules
+*.sw?
