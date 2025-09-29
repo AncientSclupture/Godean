@@ -8,6 +8,7 @@ import houseTiles from "../tile-asset/House.png";
 import fenceTiles from "../tile-asset/Fences-copiar.png";
 import idleSheet from "../tile-asset/Idle.png";
 import walkSheet from "../tile-asset/Walk.png";
+import mapleTreeTiles from "../tile-asset/Maple Tree.png";
 
 export default class PlayScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
@@ -26,6 +27,8 @@ export default class PlayScene extends Phaser.Scene {
     this.load.image("Tileset Spring", tilesetSpring);
     this.load.image("House", houseTiles);
     this.load.image("Fence's copiar", fenceTiles);
+    this.load.image("Idle", idleSheet);
+    this.load.image("Maple Tree", mapleTreeTiles);
 
     this.load.spritesheet("player-idle", idleSheet, {
       frameWidth: 32,
@@ -75,11 +78,13 @@ export default class PlayScene extends Phaser.Scene {
     const tilesSpring = map.addTilesetImage("Tileset Spring", "Tileset Spring");
     const houseTiles = map.addTilesetImage("House", "House");
     const fenceTiles = map.addTilesetImage("Fence's copiar", "Fence's copiar");
+    const hustlerTiles = map.addTilesetImage("Idle", "Idle");
+    const mapleTreeTiles = map.addTilesetImage("Maple Tree", "Maple Tree");
 
     map.createLayer("ground layer", tilesSpring!, 0, 0);
     const houseLayer = map.createLayer(
       "house layer",
-      [houseTiles!, fenceTiles!],
+      [houseTiles!, fenceTiles!, hustlerTiles!, mapleTreeTiles!],
       0,
       0
     );
