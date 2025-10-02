@@ -2,34 +2,29 @@
 import Phaser from "phaser";
 import { io, Socket } from "socket.io-client";
 
-import farmMap from "../tile-asset/base_game.json";
+import houseMap from "../tile-asset/housemaps.json";
 import tilesetSpring from "../tile-asset/Tileset-Spring.png";
-import houseTiles from "../tile-asset/House.png";
-import fenceTiles from "../tile-asset/Fences-copiar.png";
 import idleSheet from "../tile-asset/Idle.png";
+import interiorTiles from "../tile-asset/Interior.png";
 import walkSheet from "../tile-asset/Walk.png";
-import mapleTreeTiles from "../tile-asset/Maple Tree.png";
 
-export default class PlayScene extends Phaser.Scene {
+export default class HouseScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
   private otherPlayers: { [id: string]: Phaser.Physics.Arcade.Sprite } = {};
   private keys!: any;
   private socket!: Socket;
-  private roomId = "p2e";
+  private roomId = "crafting";
   private userId!: string;
   private onGateway: boolean = false;
 
   constructor() {
-    super("PlayScene");
+    super("HouseScene");
   }
 
   preload() {
-    this.load.tilemapTiledJSON("farmmap", farmMap);
+    this.load.tilemapTiledJSON("housemap", houseMap);
     this.load.image("Tileset Spring", tilesetSpring);
-    this.load.image("House", houseTiles);
-    this.load.image("Fence's copiar", fenceTiles);
-    this.load.image("Idle", idleSheet);
-    this.load.image("Maple Tree", mapleTreeTiles);
+    this.load.image("Interior", interiorTiles);
 
     this.load.spritesheet("player-idle", idleSheet, {
       frameWidth: 32,
@@ -52,6 +47,7 @@ export default class PlayScene extends Phaser.Scene {
       return;
     }
 
+    // socket
     this.socket = io("http://localhost:7890");
     const userId = this.userId;
     this.socket.emit(`join:${this.roomId}`, userId);
@@ -72,29 +68,24 @@ export default class PlayScene extends Phaser.Scene {
       right: Phaser.Input.Keyboard.KeyCodes.D,
     });
 
-    const keyF = this.input.keyboard!.addKey("F");
-
-    const map = this.make.tilemap({ key: "farmmap" });
+    const map = this.make.tilemap({ key: "housemap" });
     const tilesSpring = map.addTilesetImage("Tileset Spring", "Tileset Spring");
-    const houseTiles = map.addTilesetImage("House", "House");
-    const fenceTiles = map.addTilesetImage("Fence's copiar", "Fence's copiar");
-    const hustlerTiles = map.addTilesetImage("Idle", "Idle");
-    const mapleTreeTiles = map.addTilesetImage("Maple Tree", "Maple Tree");
+    const interiorTiles = map.addTilesetImage("Interior", "Interior");
 
-    map.createLayer("ground layer", tilesSpring!, 0, 0);
-    const houseLayer = map.createLayer(
-      "house layer",
-      [houseTiles!, fenceTiles!, hustlerTiles!, mapleTreeTiles!],
+    map.createLayer("ground", tilesSpring!, 0, 0);
+    const uppergroundLayer = map.createLayer(
+      "upperground",
+      interiorTiles!,
       0,
       0
     );
-    houseLayer!.setCollisionByProperty({ collides: true });
+    uppergroundLayer!.setCollisionByProperty({ collides: true });
 
-    // Player lokal
-    this.player = this.physics.add.sprite(120, 670, "player-idle", 0);
+    this.player = this.physics.add.sprite(32, 173, "player-idle", 0);
+    // untuk ganti scene boy
     this.physics.add.collider(
       this.player,
-      houseLayer!,
+      uppergroundLayer!,
       (_player, tile: any) => {
         if (tile?.properties?.gateway) {
           this.onGateway = true;
@@ -105,10 +96,23 @@ export default class PlayScene extends Phaser.Scene {
       }
     );
 
+    // fitting pov to house map
     this.cameras.main.startFollow(this.player);
-    this.cameras.main.setZoom(3);
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    // hardcode bos karena gw yang buat map gw kecilin (scale = 1/4)
+    this.cameras.main.setZoom(4);
 
+    // f on fullscren
+    const keyF = this.input.keyboard!.addKey("F");
+    keyF.on("down", () => {
+      if (this.scale.isFullscreen) {
+        this.scale.stopFullscreen();
+      } else {
+        this.scale.startFullscreen();
+      }
+    });
+
+    // walk animations
     this.anims.create({
       key: "walk-down",
       frames: this.anims.generateFrameNumbers("player-walk", {
@@ -145,14 +149,6 @@ export default class PlayScene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });
-
-    keyF.on("down", () => {
-      if (this.scale.isFullscreen) {
-        this.scale.stopFullscreen();
-      } else {
-        this.scale.startFullscreen();
-      }
-    });
   }
 
   update() {
@@ -186,7 +182,7 @@ export default class PlayScene extends Phaser.Scene {
       Phaser.Input.Keyboard.KeyCodes.SPACE
     );
     if (Phaser.Input.Keyboard.JustDown(space) && this.onGateway) {
-      this.scene.start("HouseScene", { accountId: this.userId });
+      this.scene.start("PlayScene", { accountId: this.userId });
     }
   }
 

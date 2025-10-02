@@ -1,6 +1,7 @@
 import React from "react";
 import Phaser from "phaser";
 import PlayScene from "./scene/PlayScene";
+import HouseScene from "./scene/HouseScene";
 
 const Game = ({ accountId }: { accountId: string }) => {
 
@@ -23,8 +24,10 @@ const Game = ({ accountId }: { accountId: string }) => {
         };
 
         const game = new Phaser.Game(config);
-        game.scene.add("PlayScene", PlayScene, true, { accountId });
-        console.log(accountId)
+        game.scene.add("PlayScene", PlayScene);
+        game.scene.add("HouseScene", HouseScene);
+
+        game.scene.start("HouseScene", { accountId });
 
         return () => {
             game.destroy(true)
