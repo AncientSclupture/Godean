@@ -2,6 +2,7 @@ import React from "react";
 import Phaser from "phaser";
 import PlayScene from "./scene/PlayScene";
 import HouseScene from "./scene/HouseScene";
+import W2EScene from "./scene/W2ESimulation";
 
 const Game = ({ accountId }: { accountId: string }) => {
 
@@ -13,10 +14,9 @@ const Game = ({ accountId }: { accountId: string }) => {
                 default: 'arcade',
                 arcade: {
                     gravity: { x: 0, y: 0 },
-                    // debug: true
+                    debug: true
                 }
             },
-            // scene: [PlayScene],
             scale: {
                 mode: Phaser.Scale.RESIZE,
                 autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -26,8 +26,9 @@ const Game = ({ accountId }: { accountId: string }) => {
         const game = new Phaser.Game(config);
         game.scene.add("PlayScene", PlayScene);
         game.scene.add("HouseScene", HouseScene);
+        game.scene.add("W2EScene", W2EScene);
 
-        game.scene.start("HouseScene", { accountId });
+        game.scene.start("PlayScene", { accountId });
 
         return () => {
             game.destroy(true)

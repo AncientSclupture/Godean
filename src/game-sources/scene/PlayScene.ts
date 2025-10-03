@@ -18,6 +18,7 @@ export default class PlayScene extends Phaser.Scene {
   private roomId = "p2e";
   private userId!: string;
   private onGateway: boolean = false;
+  private onToW2E: boolean = false;
 
   constructor() {
     super("PlayScene");
@@ -44,6 +45,8 @@ export default class PlayScene extends Phaser.Scene {
   init(data: { accountId: string }) {
     console.log("Scene init data:", data);
     this.userId = data.accountId;
+    this.onGateway = false;
+    this.onToW2E = false;
   }
 
   create() {
@@ -70,6 +73,7 @@ export default class PlayScene extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
 
     const keyF = this.input.keyboard!.addKey("F");
@@ -99,8 +103,14 @@ export default class PlayScene extends Phaser.Scene {
         if (tile?.properties?.gateway) {
           this.onGateway = true;
           console.log(">> Gateway aktif");
+        } else if (tile?.properties?.tow2e) {
+          this.onToW2E = true;
+          console.log(">> ToW2E aktif");
         } else {
           this.onGateway = false;
+          console.log(">> Gateway inaktif");
+          this.onToW2E = false;
+          console.log(">> ToW2E inaktif");
         }
       }
     );
@@ -171,6 +181,12 @@ export default class PlayScene extends Phaser.Scene {
     } else if (this.keys.down.isDown) {
       this.player.setVelocityY(speed);
       this.player.anims.play("walk-down", true);
+    } else if (this.keys.space.isDown) {
+      if (this.onGateway) {
+        this.scene.start("HouseScene", { accountId: this.userId });
+      } else if (this.onToW2E) {
+        this.scene.start("W2EScene", { accountId: this.userId });
+      }
     }
 
     const userId = this.userId;
@@ -180,14 +196,6 @@ export default class PlayScene extends Phaser.Scene {
       x: player.x,
       y: player.y,
     });
-
-    // buat ganti scene
-    const space = this.input.keyboard!.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE
-    );
-    if (Phaser.Input.Keyboard.JustDown(space) && this.onGateway) {
-      this.scene.start("HouseScene", { accountId: this.userId });
-    }
   }
 
   private syncPlayers(state: { [id: string]: { x: number; y: number } }) {
