@@ -2,11 +2,13 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { AuthenticationContext } from "../context/AuthContext";
 import { NotificationContext } from "../context/NotificationContext";
+import { ModalContext, ModalKindEnum } from "../context/ModalContext";
 
 export function Navigation() {
     const navigate = useNavigate();
-    const { isLoggedIn, login } = React.useContext(AuthenticationContext);
-    const { setNotificationData } = React.useContext(NotificationContext)
+    const { isLoggedIn } = React.useContext(AuthenticationContext);
+    const { setNotificationData } = React.useContext(NotificationContext);
+    const { setModalKind } = React.useContext(ModalContext)
 
     function handleNavigate(to: string, needAuth: boolean = true) {
         if (isLoggedIn || !needAuth) {
@@ -48,7 +50,7 @@ export function Navigation() {
                     W2E
                 </div>
                 <div
-                    onClick={() => login()}
+                    onClick={() => setModalKind(ModalKindEnum.loginopt)}
                     className="bg-gray-700 p-2 md:px-3 rounded-md hover:bg-gray-400 cursor-pointer text-white"
                 >
                     {isLoggedIn ? 'connected' : 'Connect'}

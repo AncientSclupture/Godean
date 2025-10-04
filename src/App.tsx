@@ -7,23 +7,26 @@ import W2EScreen from "./screen/work-to-earn";
 import TestSM from "./screen/testing-smartcontract";
 import TestSocket from "./screen/testing-socket";
 import { AuthProvider } from "./context/AuthContext";
+import { ModalProvider } from "./context/ModalContext";
 
 export default function App() {
 
   return (
     <AuthProvider>
       <PopUpProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Landing />} index />
-            <Route path="/play" element={<ActifityScreen />} />
-            <Route path="/fi-leaguage" element={<FinanceLeagueScreen />} />
-            <Route path="/w2e" element={<W2EScreen />} />
-            {/* debug playgorund */}
-            <Route path="/test" element={<TestSM />} />
-            <Route path="/test-socket" element={<TestSocket />} />
-          </Routes>
-        </Router>
+        <ModalProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Landing />} index />
+              <Route path="/play" element={<ActifityScreen />} />
+              <Route path="/fi-leaguage" element={<FinanceLeagueScreen />} />
+              <Route path="/w2e" element={<W2EScreen />} />
+              {/* debug playgorund */}
+              <Route path="/test" element={<TestSM />} />
+              <Route path="/test-socket" element={<TestSocket />} />
+            </Routes>
+          </Router>
+        </ModalProvider>
       </PopUpProvider>
     </AuthProvider>
   )

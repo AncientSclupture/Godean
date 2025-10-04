@@ -2,6 +2,9 @@ import type React from "react";
 import { Notification } from "./Notification";
 import { Navigation } from "./navigation";
 import { Footer } from "./footer";
+import ModalWrapper from "./modal/modal-wrapper";
+import { ModalKindEnum } from "../context/ModalContext";
+import ModalLoginOption from "./modal/login-option";
 
 export function MainLayout({ index = false, children }: { index?: boolean, children: React.ReactNode }) {
     console.log(index)
@@ -12,6 +15,12 @@ export function MainLayout({ index = false, children }: { index?: boolean, child
                 {children}
             </div>
             <Footer />
+
+            <ModalWrapper
+                listcontent={[
+                    { name: ModalKindEnum.loginopt, component: <ModalLoginOption /> },
+                ]}
+            />
 
             <Notification />
         </div>
