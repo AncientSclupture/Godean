@@ -11,6 +11,7 @@ export type AuthenticationContextType = {
     accountid: string | null;
     isLoading: boolean;
     login: () => void;
+    manualLogin: (d: string) => void;
     logout: () => void;
     contract: ethers.Contract | null;
     isLoggedIn: boolean;
@@ -23,6 +24,7 @@ export const AuthenticationContext = createContext<AuthenticationContextType>({
     logout: () => { },
     contract: null,
     isLoggedIn: false,
+    manualLogin: () => {}
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -76,6 +78,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setContract(null);
     };
 
+    const manualLogin = (d: string) => {
+        setAccountid(d);
+        setIsLoggedIn(true);
+    }
+
     useEffect(() => {
         if (accountid) {
             setIsLoggedIn(true)
@@ -91,6 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 isLoading,
                 login,
                 logout,
+                manualLogin: manualLogin,
                 contract,
                 isLoggedIn
             }}

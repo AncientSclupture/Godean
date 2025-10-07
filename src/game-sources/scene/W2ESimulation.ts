@@ -18,6 +18,8 @@ export default class W2EScene extends Phaser.Scene {
   private roomId = "w2e";
   private userId!: string;
   private onGateway: boolean = false;
+  private initialXSpawnPosition = 956;
+  private initialYSpawnPosition = 533;
 
   constructor() {
     super("W2EScene");
@@ -59,9 +61,13 @@ export default class W2EScene extends Phaser.Scene {
 
     this.socket.on(`listenupdate:${this.roomId}`, (state) => {
       console.log(state);
+      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
     this.socket.on(`update:${this.roomId}`, (state) => {
+      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
 
@@ -95,7 +101,7 @@ export default class W2EScene extends Phaser.Scene {
     objectLayer!.setCollisionByProperty({ collides: true });
 
     // Player lokal
-    this.player = this.physics.add.sprite(956, 533, "player-idle", 0);
+    this.player = this.physics.add.sprite(this.initialXSpawnPosition, this.initialYSpawnPosition, "player-idle", 0);
     this.physics.add.collider(
       this.player,
       objectLayer!,

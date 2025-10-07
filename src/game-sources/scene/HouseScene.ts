@@ -16,6 +16,8 @@ export default class HouseScene extends Phaser.Scene {
   private roomId = "house";
   private userId!: string;
   private onGateway: boolean = false;
+  private initialXSpawnPosition = 32;
+  private initialYSpawnPosition = 173;
 
   constructor() {
     super("HouseScene");
@@ -54,10 +56,13 @@ export default class HouseScene extends Phaser.Scene {
     this.socket.emit(`join:${this.roomId}`, userId);
 
     this.socket.on(`listenupdate:${this.roomId}`, (state) => {
-      console.log(state);
+      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
     this.socket.on(`update:${this.roomId}`, (state) => {
+      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
 
@@ -82,7 +87,7 @@ export default class HouseScene extends Phaser.Scene {
     );
     uppergroundLayer!.setCollisionByProperty({ collides: true });
 
-    this.player = this.physics.add.sprite(32, 173, "player-idle", 0);
+    this.player = this.physics.add.sprite(this.initialXSpawnPosition, this.initialYSpawnPosition, "player-idle", 0);
     // untuk ganti scene boy
     this.physics.add.collider(
       this.player,
