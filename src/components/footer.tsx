@@ -40,9 +40,11 @@ export function Footer() {
                 </div>
 
                 <div className="space-y-3">
-                    <div>Connect</div>
+                    <div>Social Media</div>
                     <div className="flex items-center space-x-3">
-                        <Instagram />
+                        <Link to={'https://www.instagram.com/ancient.sclupture/'} target="_blank">
+                            <Instagram />
+                        </Link>
                         <Twitter />
                     </div>
                 </div>
