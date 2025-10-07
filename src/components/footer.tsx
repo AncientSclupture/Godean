@@ -28,9 +28,15 @@ export function Footer() {
 
                 <div className="space-y-3">
                     <div>Support</div>
-                    <p className="text-gray-400 hover:text-white cursor-pointer">About Game</p>
-                    <p className="text-gray-400 hover:text-white cursor-pointer">Contact</p>
-                    <p className="text-gray-400 hover:text-white cursor-pointer">FAQ</p>
+                    <div className="text-gray-400 hover:text-white cursor-pointer">
+                        <Link to={"/about"}>About Game</Link>
+                    </div>
+                    <div className="text-gray-400 hover:text-white cursor-pointer">
+                        <Link to={"/contact"}>Contact</Link>
+                    </div>
+                    <div className="text-gray-400 hover:text-white cursor-pointer">
+                        <Link to={"/faq"}>FAQ</Link>
+                    </div>
                 </div>
 
                 <div className="space-y-3">

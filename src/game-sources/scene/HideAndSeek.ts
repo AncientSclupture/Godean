@@ -2,38 +2,33 @@
 import Phaser from "phaser";
 import { io, Socket } from "socket.io-client";
 
-import farmMap from "../tile-asset/base_game.json";
+import hsnMap from "../tile-asset/hsn.json";
 import tilesetSpring from "../tile-asset/Tileset-Spring.png";
-import houseTiles from "../tile-asset/House.png";
-import fenceTiles from "../tile-asset/Fences-copiar.png";
+import mapleTreeTiles from "../tile-asset/Maple Tree.png";
 import idleSheet from "../tile-asset/Idle.png";
 import walkSheet from "../tile-asset/Walk.png";
-import mapleTreeTiles from "../tile-asset/Maple Tree.png";
+import chickenSheet from "../tile-asset/Chicken Red.png";
 
-export default class PlayScene extends Phaser.Scene {
+export default class HideAndSeekScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
   private otherPlayers: { [id: string]: Phaser.Physics.Arcade.Sprite } = {};
   private keys!: any;
   private socket!: Socket;
-  private roomId = "p2e";
+  private roomId = "hns";
   private userId!: string;
-  private onGateway: boolean = false;
-  private onToW2E: boolean = false;
-  private onToCatchChicken: boolean = false;
-  private initialXSpawnPosition = 120;
-  private initialYSpawnPosition = 670;
+  private initialXSpawnPosition = 243;
+  private initialYSpawnPosition = 310;
+  private chickenbot!: Phaser.Physics.Arcade.Sprite;
 
   constructor() {
-    super("PlayScene");
+    super("HideAndSeekScene");
   }
 
   preload() {
-    this.load.tilemapTiledJSON("farmmap", farmMap);
+    this.load.tilemapTiledJSON("hsnMap", hsnMap);
     this.load.image("Tileset Spring", tilesetSpring);
-    this.load.image("House", houseTiles);
-    this.load.image("Fence's copiar", fenceTiles);
-    this.load.image("Idle", idleSheet);
     this.load.image("Maple Tree", mapleTreeTiles);
+    this.load.image("Idle", idleSheet);
 
     this.load.spritesheet("player-idle", idleSheet, {
       frameWidth: 32,
@@ -43,13 +38,16 @@ export default class PlayScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
+
+    this.load.spritesheet("object-walk", chickenSheet, {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
   }
 
   init(data: { accountId: string }) {
     console.log("Scene init data:", data);
     this.userId = data.accountId;
-    this.onGateway = false;
-    this.onToW2E = false;
   }
 
   create() {
@@ -63,13 +61,17 @@ export default class PlayScene extends Phaser.Scene {
     this.socket.emit(`join:${this.roomId}`, userId);
 
     this.socket.on(`listenupdate:${this.roomId}`, (state) => {
-      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
-      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
+      this.initialXSpawnPosition =
+        state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition =
+        state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
     this.socket.on(`update:${this.roomId}`, (state) => {
-      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
-      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
+      this.initialXSpawnPosition =
+        state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition =
+        state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
 
@@ -83,42 +85,64 @@ export default class PlayScene extends Phaser.Scene {
     });
 
     const keyF = this.input.keyboard!.addKey("F");
+    keyF.on("down", () => {
+      if (this.scale.isFullscreen) {
+        this.scale.stopFullscreen();
+      } else {
+        this.scale.startFullscreen();
+      }
+    });
 
-    const map = this.make.tilemap({ key: "farmmap" });
+    const map = this.make.tilemap({ key: "hsnMap" });
     const tilesSpring = map.addTilesetImage("Tileset Spring", "Tileset Spring");
-    const houseTiles = map.addTilesetImage("House", "House");
-    const fenceTiles = map.addTilesetImage("Fence's copiar", "Fence's copiar");
-    const hustlerTiles = map.addTilesetImage("Idle", "Idle");
     const mapleTreeTiles = map.addTilesetImage("Maple Tree", "Maple Tree");
-
-    map.createLayer("ground layer", tilesSpring!, 0, 0);
-    const houseLayer = map.createLayer(
-      "house layer",
-      [houseTiles!, fenceTiles!, hustlerTiles!, mapleTreeTiles!],
-      0,
-      0
-    );
-    houseLayer!.setCollisionByProperty({ collides: true });
+    map.createLayer("ground", tilesSpring!, 0, 0);
+    const obstacleLayer = map.createLayer("obstacle", mapleTreeTiles!, 0, 0);
+    obstacleLayer!.setCollisionByProperty({ collides: true });
 
     // Player lokal
-    this.player = this.physics.add.sprite(this.initialXSpawnPosition, this.initialYSpawnPosition, "player-idle", 0);
+    this.player = this.physics.add.sprite(
+      this.initialXSpawnPosition,
+      this.initialYSpawnPosition,
+      "player-idle",
+      0
+    );
+
+    this.chickenbot = this.physics.add.sprite(300, 400, "object-walk", 0);
+
+    this.physics.add.collider([this.player, this.chickenbot], obstacleLayer!);
+    this.chickenbot.setData("catchable", true);
+
     this.physics.add.collider(
       this.player,
-      houseLayer!,
-      (_player, tile: any) => {
-        if (tile?.properties?.gateway) {
-          this.onGateway = true;
-        } else if (tile?.properties?.tow2e) {
-          this.onToW2E = true;
-        } else if (tile?.properties?.tocatchchicken) {
-          this.onToCatchChicken = true;
-        } else {
-          this.onGateway = false;
-          this.onToW2E = false;
-          this.onToCatchChicken = false;
-        }
+      this.chickenbot,
+      (_playerObj, chickenObj) => {
+        const chicken = chickenObj as Phaser.GameObjects.Sprite;
+        console.log(">> Bertabrakan dengan chickenbot");
+        console.log(chicken.getData("catchable"));
       }
     );
+    this.chickenbot.setCollideWorldBounds(true); // Biar ga keluar map
+
+    this.time.addEvent({
+      delay: 1000, // tiap 2 detik ganti arah
+      loop: true,
+      callback: () => {
+        const speed = 80;
+        const dirX = Phaser.Math.Between(-2, 2);
+        const dirY = Phaser.Math.Between(-3, 3);
+
+        this.chickenbot.setVelocity(dirX * speed, dirY * speed);
+
+        // Set animasi kalau bergerak
+        if (dirX !== 0 || dirY !== 0) {
+          this.chickenbot.anims.play("chicken-walk", true);
+          this.chickenbot.flipX = dirX < 0;
+        } else {
+          this.chickenbot.anims.stop();
+        }
+      },
+    });
 
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setZoom(3);
@@ -161,12 +185,14 @@ export default class PlayScene extends Phaser.Scene {
       repeat: -1,
     });
 
-    keyF.on("down", () => {
-      if (this.scale.isFullscreen) {
-        this.scale.stopFullscreen();
-      } else {
-        this.scale.startFullscreen();
-      }
+    this.anims.create({
+      key: "chicken-walk",
+      frames: this.anims.generateFrameNumbers("object-walk", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 8,
+      repeat: -1,
     });
   }
 
@@ -186,14 +212,6 @@ export default class PlayScene extends Phaser.Scene {
     } else if (this.keys.down.isDown) {
       this.player.setVelocityY(speed);
       this.player.anims.play("walk-down", true);
-    } else if (this.keys.space.isDown) {
-      if (this.onGateway) {
-        this.scene.start("HouseScene", { accountId: this.userId });
-      } else if (this.onToW2E) {
-        this.scene.start("W2EScene", { accountId: this.userId });
-      } else if (this.onToCatchChicken) {
-        this.scene.start("HideAndSeekScene", { accountId: this.userId });
-      }
     }
 
     const userId = this.userId;

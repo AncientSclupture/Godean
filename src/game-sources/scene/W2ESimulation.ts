@@ -55,7 +55,7 @@ export default class W2EScene extends Phaser.Scene {
       return;
     }
 
-    this.socket = io("http://localhost:7890");
+    this.socket = io("https://godean-game-server.grayhill-39d1a131.southeastasia.azurecontainerapps.io/");
     const userId = this.userId;
     this.socket.emit(`join:${this.roomId}`, userId);
 

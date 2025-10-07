@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
-const socket: Socket = io("http://localhost:7890"); // ganti sesuai alamat server
+const socket: Socket = io("https://godean-game-server.grayhill-39d1a131.southeastasia.azurecontainerapps.io/"); // ganti sesuai alamat server
 
 function TestSocket() {
     const [players, setPlayers] = useState<{ [id: string]: { x: number; y: number } }>({});

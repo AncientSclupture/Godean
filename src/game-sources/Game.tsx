@@ -3,6 +3,7 @@ import Phaser from "phaser";
 import PlayScene from "./scene/PlayScene";
 import HouseScene from "./scene/HouseScene";
 import W2EScene from "./scene/W2ESimulation";
+import HideAndSeekScene from "./scene/HideAndSeek";
 
 const Game = ({ accountId }: { accountId: string }) => {
 
@@ -27,6 +28,7 @@ const Game = ({ accountId }: { accountId: string }) => {
         game.scene.add("PlayScene", PlayScene);
         game.scene.add("HouseScene", HouseScene);
         game.scene.add("W2EScene", W2EScene);
+        game.scene.add("HideAndSeekScene", HideAndSeekScene);
 
         game.scene.start("PlayScene", { accountId });
 
