@@ -18,7 +18,9 @@ export default function ActifityScreen() {
 
     return (
         <MainLayout>
-            <Game accountId={accountid} />
+            <div className="h-screen w-full flex items-center justify-center">
+                <Game accountId={accountid} />
+            </div>
         </MainLayout>
     )
 }

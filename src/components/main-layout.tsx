@@ -14,9 +14,9 @@ export function MainLayout({ needProtection = true, children }: { needProtection
     if (needProtection && !isLoggedIn) return <Forbidden />
 
     return (
-        <div className="w-full overflow-hidden min-h-screen">
+        <div className="w-full min-h-screen">
             <Navigation />
-            <div className="h-screen w-full flex items-center justify-center">
+            <div>
                 {children}
             </div>
             <Footer />
