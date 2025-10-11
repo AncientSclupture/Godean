@@ -29,7 +29,7 @@ export default function RegistFiLeague() {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch("http://https://godean-backend-api.vercel.app/api/fi-sim/regist", {
+            const response = await fetch("https://godean-backend-api.vercel.app/api/fi-sim/regist", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
