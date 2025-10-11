@@ -3,6 +3,7 @@
 import { MainLayout } from "../components/main-layout";
 import emailjs from "emailjs-com";
 import React, { useState } from "react";
+import { FaDiscord, FaTelegramPlane, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 // [PANGGILAN RYAN JAWA: TOLONG KERJAIN DARI SINI YOW]
 export default function ContactScreen() {
@@ -146,7 +147,7 @@ export default function ContactScreen() {
                         rel="noopener noreferrer"
                         className="hover:text-emerald-200 transition"
                         >
-                        {/* <FaLinkedin /> */}
+                        <FaLinkedin />
                     </a>
                     <a
                         href="https://discord.gg"
@@ -154,7 +155,7 @@ export default function ContactScreen() {
                         rel="noopener noreferrer"
                         className="hover:text-emerald-200 transition"
                         >
-                        {/* <FaDiscord /> */}
+                        <FaDiscord />
                     </a>
                     <a
                         href="https://t.me"
@@ -162,7 +163,7 @@ export default function ContactScreen() {
                         rel="noopener noreferrer"
                         className="hover:text-emerald-200 transition"
                         >
-                        {/* <FaTelegramPlane /> */}
+                        <FaTelegramPlane />
                     </a>
                     <a
                         href="https://twitter.com"
