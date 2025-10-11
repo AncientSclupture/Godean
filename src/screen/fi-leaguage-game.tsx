@@ -19,7 +19,7 @@ export default function FinanceLeagueGame() {
         async function fetchData() {
             setIsLoadingCheck(true)
             try {
-                const response = await fetch("http://localhost:3000/api/fi-sim/self-check", {
+                const response = await fetch("http://https://godean-backend-api.vercel.app/api/fi-sim/self-check", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

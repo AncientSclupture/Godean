@@ -22,6 +22,7 @@ export default class PlayScene extends Phaser.Scene {
   private onToCatchChicken: boolean = false;
   private initialXSpawnPosition = 120;
   private initialYSpawnPosition = 670;
+  private playerMark!: Phaser.GameObjects.Text;
 
   constructor() {
     super("PlayScene");
@@ -58,18 +59,24 @@ export default class PlayScene extends Phaser.Scene {
       return;
     }
 
-    this.socket = io("https://godean-game-server.grayhill-39d1a131.southeastasia.azurecontainerapps.io/");
+    this.socket = io(
+      "https://godean-game-server.grayhill-39d1a131.southeastasia.azurecontainerapps.io/"
+    );
     const userId = this.userId;
     this.socket.emit(`join:${this.roomId}`, userId);
 
     this.socket.on(`listenupdate:${this.roomId}`, (state) => {
-      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
-      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
+      this.initialXSpawnPosition =
+        state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition =
+        state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
     this.socket.on(`update:${this.roomId}`, (state) => {
-      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
-      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
+      this.initialXSpawnPosition =
+        state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition =
+        state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
 
@@ -101,7 +108,12 @@ export default class PlayScene extends Phaser.Scene {
     houseLayer!.setCollisionByProperty({ collides: true });
 
     // Player lokal
-    this.player = this.physics.add.sprite(this.initialXSpawnPosition, this.initialYSpawnPosition, "player-idle", 0);
+    this.player = this.physics.add.sprite(
+      this.initialXSpawnPosition,
+      this.initialYSpawnPosition,
+      "player-idle",
+      0
+    );
     this.physics.add.collider(
       this.player,
       houseLayer!,
@@ -119,6 +131,24 @@ export default class PlayScene extends Phaser.Scene {
         }
       }
     );
+
+    this.playerMark = this.add
+      .text(this.player.x, this.player.y - 20, "You", {
+        fontFamily: "Arial Black",
+        fontSize: "8px",
+        color: "#fff",
+        backgroundColor: "rgba(0,0,0,0.3)",
+        stroke: "#000",
+        strokeThickness: 2,
+        shadow: {
+          offsetX: 2,
+          offsetY: 2,
+          color: "#000",
+          blur: 2,
+          fill: true,
+        },
+      })
+      .setOrigin(0.5);
 
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setZoom(3);
@@ -189,7 +219,7 @@ export default class PlayScene extends Phaser.Scene {
     } else if (this.keys.space.isDown) {
       if (this.onGateway) {
         this.scene.start("HouseScene", { accountId: this.userId });
-      }  else if (this.onToCatchChicken) {
+      } else if (this.onToCatchChicken) {
         this.scene.start("HideAndSeekScene", { accountId: this.userId });
       }
       // else if (this.onToW2E) {
@@ -204,6 +234,7 @@ export default class PlayScene extends Phaser.Scene {
       x: player.x,
       y: player.y,
     });
+    this.playerMark.setPosition(player.x, player.y - 20);
   }
 
   private syncPlayers(state: { [id: string]: { x: number; y: number } }) {

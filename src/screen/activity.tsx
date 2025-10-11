@@ -2,6 +2,7 @@ import React from "react";
 import { MainLayout } from "../components/main-layout";
 import Game from "../game-sources/Game";
 import { AuthenticationContext } from "../context/AuthContext";
+import ErrorHappened from "../components/error-happened";
 
 export default function ActifityScreen() {
     const { isLoggedIn, accountid } = React.useContext(AuthenticationContext);
@@ -9,12 +10,10 @@ export default function ActifityScreen() {
     if (!isLoggedIn || !accountid) {
         return (
             <MainLayout>
-                <div>user is not loggged in</div>
+                <ErrorHappened message="User not logged in or account ID missing." />
             </MainLayout>
         )
     };
-
-    console.log(accountid)
 
     return (
         <MainLayout>
