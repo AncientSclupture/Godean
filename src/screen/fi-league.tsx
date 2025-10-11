@@ -2,21 +2,25 @@ import { CardIntroFiLeague } from "../components/fi-league/card-intro"
 import { MainLayout } from "../components/main-layout"
 
 const FinanceLeagueData: {
+    id: string | null;
     name: string;
     description: string;
     imageCover: string;
 }[] = [
         {
+            id: "test-123",
             name: "Who Is Fraud and Why?",
             description: "Uji kemampuanmu dalam mengenali perusahaan palsu! Pelajari tanda-tanda penipuan berkedok investasi, MLM, dan ponzi melalui simulasi interaktif dan studi kasus nyata.",
             imageCover: "./finance-game-cover.jpeg"
         },
         {
+            id: "test-123",
             name: "Do i know how to invest properly?",
             description: "Tantang dirimu dalam membuat keputusan investasi yang bijak. Pelajari prinsip dasar investasi sehat, manajemen risiko, dan cara membedakan peluang dari jebakan finansial.",
             imageCover: "./finance-game-cover.jpeg"
         },
         {
+            id: "test-123",
             name: "Real Investment Simulation",
             description: "Masuki dunia simulasi investasi nyata! Bangun portofolio, analisis pasar, dan lihat bagaimana strategi keuanganmu bertahan dalam kondisi ekonomi yang dinamis.",
             imageCover: "./finance-game-cover.jpeg"
@@ -53,6 +57,7 @@ export default function FinanceLeagueScreen() {
                         {FinanceLeagueData.map((d, idx) =>
                             <CardIntroFiLeague
                                 key={idx}
+                                id={d.id}
                                 name={d.name}
                                 description={d.description}
                                 imageCover={d.imageCover}

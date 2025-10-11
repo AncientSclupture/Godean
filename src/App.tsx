@@ -11,6 +11,8 @@ import TestSocket from "./screen/testing-socket";
 import AboutGameScreen from "./screen/about-game";
 import FaQScreen from "./screen/faq";
 import ContactScreen from "./screen/contact";
+import FinanceLeagueGame from "./screen/fi-leaguage-game";
+import { GameTransitionDataProvider } from "./context/GameTransitionDataContext";
 
 export default function App() {
 
@@ -18,20 +20,23 @@ export default function App() {
     <AuthProvider>
       <PopUpProvider>
         <ModalProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<Landing />} index />
-              <Route path="/play" element={<ActifityScreen />} />
-              <Route path="/fi-leaguage" element={<FinanceLeagueScreen />} />
-              <Route path="/w2e" element={<W2EScreen />} />
-              <Route path="/about" element={<AboutGameScreen />} />
-              <Route path="/faq" element={<FaQScreen />} />
-              <Route path="/contact" element={<ContactScreen />} />
-              {/* debug playgorund */}
-              <Route path="/test" element={<TestSM />} />
-              <Route path="/test-socket" element={<TestSocket />} />
-            </Routes>
-          </Router>
+          <GameTransitionDataProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<Landing />} index />
+                <Route path="/play" element={<ActifityScreen />} />
+                <Route path="/fi-leaguage" element={<FinanceLeagueScreen />} />
+                <Route path="/w2e" element={<W2EScreen />} />
+                <Route path="/about" element={<AboutGameScreen />} />
+                <Route path="/faq" element={<FaQScreen />} />
+                <Route path="/contact" element={<ContactScreen />} />
+                <Route path="/play-fisim" element={<FinanceLeagueGame />} />
+                {/* debug playgorund */}
+                <Route path="/test" element={<TestSM />} />
+                <Route path="/test-socket" element={<TestSocket />} />
+              </Routes>
+            </Router>
+          </GameTransitionDataProvider>
         </ModalProvider>
       </PopUpProvider>
     </AuthProvider>
