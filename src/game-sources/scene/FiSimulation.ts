@@ -10,7 +10,7 @@ import fenceTiles from "../tile-asset/Fences-copiar.png";
 import walkSheet from "../tile-asset/Walk.png";
 import femaleCowTiles from "../tile-asset/Female Cow Brown.png";
 
-export default class W2EScene extends Phaser.Scene {
+export default class FiSimScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
   private otherPlayers: { [id: string]: Phaser.Physics.Arcade.Sprite } = {};
   private keys!: any;
@@ -22,7 +22,7 @@ export default class W2EScene extends Phaser.Scene {
   private initialYSpawnPosition = 533;
 
   constructor() {
-    super("W2EScene");
+    super("FiSimScene");
   }
 
   preload() {
@@ -55,20 +55,63 @@ export default class W2EScene extends Phaser.Scene {
       return;
     }
 
-    this.socket = io("https://godean-game-server.grayhill-39d1a131.southeastasia.azurecontainerapps.io/");
+    this.socket = io(
+      "https://godean-game-server.grayhill-39d1a131.southeastasia.azurecontainerapps.io/"
+    );
     const userId = this.userId;
     this.socket.emit(`join:${this.roomId}`, userId);
 
     this.socket.on(`listenupdate:${this.roomId}`, (state) => {
       console.log(state);
-      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
-      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
+      this.initialXSpawnPosition =
+        state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition =
+        state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
     this.socket.on(`update:${this.roomId}`, (state) => {
-      this.initialXSpawnPosition = state[userId].x ?? this.initialXSpawnPosition;
-      this.initialYSpawnPosition = state[userId].y ?? this.initialYSpawnPosition;
+      this.initialXSpawnPosition =
+        state[userId].x ?? this.initialXSpawnPosition;
+      this.initialYSpawnPosition =
+        state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
+    });
+
+    this.anims.create({
+      key: "walk-down",
+      frames: this.anims.generateFrameNumbers("player-walk", {
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "walk-left",
+      frames: this.anims.generateFrameNumbers("player-walk", {
+        start: 12,
+        end: 17,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "walk-right",
+      frames: this.anims.generateFrameNumbers("player-walk", {
+        start: 12,
+        end: 17,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "walk-up",
+      frames: this.anims.generateFrameNumbers("player-walk", {
+        start: 6,
+        end: 11,
+      }),
+      frameRate: 10,
+      repeat: -1,
     });
 
     // Input setup
@@ -91,7 +134,6 @@ export default class W2EScene extends Phaser.Scene {
       "Female Cow Brown"
     );
     map.createLayer("ground", tilesSpring!, 0, 0);
-    map.createLayer("upperground", tilesSpring!, 0, 0);
     const objectLayer = map.createLayer(
       "object",
       [houseTiles!, fenceTiles!, hustlerTiles!, femaleCowTiles!],
@@ -101,7 +143,12 @@ export default class W2EScene extends Phaser.Scene {
     objectLayer!.setCollisionByProperty({ collides: true });
 
     // Player lokal
-    this.player = this.physics.add.sprite(this.initialXSpawnPosition, this.initialYSpawnPosition, "player-idle", 0);
+    this.player = this.physics.add.sprite(
+      this.initialXSpawnPosition,
+      this.initialYSpawnPosition,
+      "player-idle",
+      0
+    );
     this.physics.add.collider(
       this.player,
       objectLayer!,

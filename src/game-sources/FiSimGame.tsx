@@ -1,11 +1,7 @@
 import React from "react";
-import Phaser from "phaser";
-import PlayScene from "./scene/PlayScene";
-import HouseScene from "./scene/HouseScene";
-import HideAndSeekScene from "./scene/HideAndSeek";
+import FiSimScene from "./scene/FiSimulation";
 
-const Game = ({ accountId }: { accountId: string }) => {
-
+const FiGame = ({ accountId }: { accountId: string }) => {
     React.useEffect(() => {
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
@@ -14,7 +10,6 @@ const Game = ({ accountId }: { accountId: string }) => {
                 default: 'arcade',
                 arcade: {
                     gravity: { x: 0, y: 0 },
-                    // debug: true
                 }
             },
             scale: {
@@ -24,11 +19,9 @@ const Game = ({ accountId }: { accountId: string }) => {
         };
 
         const game = new Phaser.Game(config);
-        game.scene.add("PlayScene", PlayScene);
-        game.scene.add("HouseScene", HouseScene);
-        game.scene.add("HideAndSeekScene", HideAndSeekScene);
+        game.scene.add("FiSimScene", FiSimScene);
 
-        game.scene.start("PlayScene", { accountId });
+        game.scene.start("FiSimScene", { accountId });
 
         return () => {
             game.destroy(true)
@@ -38,4 +31,4 @@ const Game = ({ accountId }: { accountId: string }) => {
     return <div id="game-container" />
 }
 
-export default Game;
+export default FiGame;

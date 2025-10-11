@@ -1,20 +1,21 @@
 import React from "react"
 import { ModalContext, ModalKindEnum } from "../../context/ModalContext"
+import { GameTransitionDataContext } from "../../context/GameTransitionDataContext"
 
 interface CardIntroFiLeagueProps {
+    id: string | null;
     name: string
     description: string
     imageCover: string
 }
 
-export function CardIntroFiLeague({ name, description, imageCover }: CardIntroFiLeagueProps) {
-
+export function CardIntroFiLeague({ id, name, description, imageCover }: CardIntroFiLeagueProps) {
+    const {setRequiredId} = React.useContext(GameTransitionDataContext);
     const {setModalKind} = React.useContext(ModalContext);
 
     const handleStart = () => {
-        // Buat slug otomatis dari nama game
         setModalKind(ModalKindEnum.fileaguedetails);
-
+        setRequiredId(id);
         console.log("Starting game")
     }
 

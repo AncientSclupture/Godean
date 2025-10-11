@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { ModalContext } from "../../context/ModalContext"
 import { X } from "lucide-react"
+import { useNavigate } from "react-router";
 
 interface ModalFiLeagueDetailsProps {
   name?: string
@@ -13,17 +14,18 @@ export default function ModalFiLeagueDetails({
   description,
   imageCover,
 }: ModalFiLeagueDetailsProps) {
+  const navigate = useNavigate();
   const { setModalKind } = React.useContext(ModalContext)
   const [agreed, setAgreed] = useState(false)
 
   function handleClose() {
-    setModalKind(null)
+    setModalKind(null);
   }
 
   function handleStart() {
     if (!agreed) return
-    setModalKind(null)
-    console.log(`Starting game: ${name}`)
+    setModalKind(null);
+    navigate("/play-fisim");
   }
 
   return (
@@ -45,7 +47,6 @@ export default function ModalFiLeagueDetails({
           />
         </div>
 
-        {/* Informasi utama */}
         <div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
             {name || "Finance League Game"}
@@ -56,7 +57,6 @@ export default function ModalFiLeagueDetails({
           </p>
         </div>
 
-        {/* Rules Section */}
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <h3 className="font-semibold text-gray-800 mb-2">🎯 Aturan Permainan</h3>
           <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
@@ -67,7 +67,6 @@ export default function ModalFiLeagueDetails({
           </ul>
         </div>
 
-        {/* Reward Section */}
         <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 flex items-center justify-between">
           <div>
             <h4 className="font-semibold text-indigo-700">🎁 Reward</h4>
@@ -76,7 +75,6 @@ export default function ModalFiLeagueDetails({
           <div className="text-3xl">🏅</div>
         </div>
 
-        {/* Agreement */}
         <div className="flex items-center">
           <input
             id="agreeRules"
@@ -91,7 +89,6 @@ export default function ModalFiLeagueDetails({
         </div>
       </div>
 
-      {/* Tombol aksi (selalu di bawah, tidak ikut scroll) */}
       <div className="p-4 border-t border-gray-200 flex justify-end space-x-2 bg-white rounded-b-2xl">
         <button
           onClick={handleClose}

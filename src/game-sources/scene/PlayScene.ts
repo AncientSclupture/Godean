@@ -18,7 +18,7 @@ export default class PlayScene extends Phaser.Scene {
   private roomId = "p2e";
   private userId!: string;
   private onGateway: boolean = false;
-  private onToW2E: boolean = false;
+  // private onToW2E: boolean = false;
   private onToCatchChicken: boolean = false;
   private initialXSpawnPosition = 120;
   private initialYSpawnPosition = 670;
@@ -49,7 +49,7 @@ export default class PlayScene extends Phaser.Scene {
     console.log("Scene init data:", data);
     this.userId = data.accountId;
     this.onGateway = false;
-    this.onToW2E = false;
+    // this.onToW2E = false;
   }
 
   create() {
@@ -109,12 +109,12 @@ export default class PlayScene extends Phaser.Scene {
         if (tile?.properties?.gateway) {
           this.onGateway = true;
         } else if (tile?.properties?.tow2e) {
-          this.onToW2E = true;
+          // this.onToW2E = true;
         } else if (tile?.properties?.tocatchchicken) {
           this.onToCatchChicken = true;
         } else {
           this.onGateway = false;
-          this.onToW2E = false;
+          // this.onToW2E = false;
           this.onToCatchChicken = false;
         }
       }
@@ -189,11 +189,12 @@ export default class PlayScene extends Phaser.Scene {
     } else if (this.keys.space.isDown) {
       if (this.onGateway) {
         this.scene.start("HouseScene", { accountId: this.userId });
-      } else if (this.onToW2E) {
-        this.scene.start("W2EScene", { accountId: this.userId });
-      } else if (this.onToCatchChicken) {
+      }  else if (this.onToCatchChicken) {
         this.scene.start("HideAndSeekScene", { accountId: this.userId });
       }
+      // else if (this.onToW2E) {
+      //   this.scene.start("W2EScene", { accountId: this.userId });
+      // }
     }
 
     const userId = this.userId;
