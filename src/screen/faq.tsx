@@ -4,7 +4,7 @@ import { MainLayout } from "../components/main-layout";
 export default function FaQScreen() {
     return (
         <MainLayout needProtection={false}>
-            <div>FaQ</div>
+            <div className="h-screen w-full flex items-center justify-center">FaQ</div>
         </MainLayout>
     )
 }

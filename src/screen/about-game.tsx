@@ -4,7 +4,7 @@ import { MainLayout } from "../components/main-layout";
 export default function AboutGameScreen() {
     return (
         <MainLayout needProtection={false}>
-            <div>About The Game</div>
+            <div className="h-screen w-full flex items-center justify-center">About The Game</div>
         </MainLayout>
     )
 }

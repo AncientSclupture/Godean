@@ -4,7 +4,7 @@ import { MainLayout } from "../components/main-layout";
 export default function ContactScreen() {
     return (
         <MainLayout needProtection={false}>
-            <div>Contact</div>
+            <div className="h-screen w-full flex items-center justify-center">Contact</div>
         </MainLayout>
     )
 }

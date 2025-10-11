@@ -7,6 +7,7 @@ import { ModalKindEnum } from "../context/ModalContext";
 import ModalLoginOption from "./modal/login-option";
 import { AuthenticationContext } from "../context/AuthContext";
 import Forbidden from "./forbiden";
+import ModalFiLeagueDetails from "./modal/fileague-details";
 
 export function MainLayout({ needProtection = true, children }: { needProtection?: boolean, children: React.ReactNode }) {
     const { isLoggedIn } = React.useContext(AuthenticationContext);
@@ -14,9 +15,9 @@ export function MainLayout({ needProtection = true, children }: { needProtection
     if (needProtection && !isLoggedIn) return <Forbidden />
 
     return (
-        <div className="w-full overflow-hidden min-h-screen">
+        <div className="w-full min-h-screen">
             <Navigation />
-            <div className="h-screen w-full flex items-center justify-center">
+            <div>
                 {children}
             </div>
             <Footer />
@@ -24,6 +25,7 @@ export function MainLayout({ needProtection = true, children }: { needProtection
             <ModalWrapper
                 listcontent={[
                     { name: ModalKindEnum.loginopt, component: <ModalLoginOption /> },
+                    { name: ModalKindEnum.fileaguedetails, component: <ModalFiLeagueDetails /> },
                 ]}
             />
 
