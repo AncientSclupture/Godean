@@ -22,10 +22,10 @@ export default function ContactScreen() {
 
         emailjs
             .send(
-              "service_2pg8rjt", // service ID 
-              "template_6uh0zh7", // template ID
+              process.env.SERVICE_ID ?? "", // service ID 
+              process.env.TEMPLATE_ID ?? "", // template ID
               formData,
-              "NImCIHWKboR__iBCM" // public key
+              process.env.PUBLIC_KEY ?? "" // public key
             )
             .then(() => {
                 setStatus("Message sent successfully!");
@@ -171,7 +171,7 @@ export default function ContactScreen() {
                         rel="noopener noreferrer"
                         className="hover:text-emerald-200 transition"
                         >
-                        {/* <FaTwitter /> */}
+                        <FaTwitter />
                     </a>
                 </div>
                 <p className="mt-6 text-sm text-gray-200">
