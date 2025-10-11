@@ -52,7 +52,7 @@ export function Footer() {
             </div>
             <div className="border-b border-gray-700 w-full" />
             <div className="w-full text-center">
-                © 2025 AncientSclupture. All rights reserved.
+                © 2025 AncientSculpture. All rights reserved.
             </div>
         </div>
     )

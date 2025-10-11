@@ -15,9 +15,9 @@ export function MainLayout({ needProtection = true, children }: { needProtection
     if (needProtection && !isLoggedIn) return <Forbidden />
 
     return (
-        <div className="w-full min-h-screen">
+        <div className="flex flex-col w-full min-h-screen">
             <Navigation />
-            <div>
+            <div className="flex-grow">
                 {children}
             </div>
             <Footer />
