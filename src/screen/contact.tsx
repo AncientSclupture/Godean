@@ -1,7 +1,44 @@
+"use client";
+
 import { MainLayout } from "../components/main-layout";
+import emailjs from "emailjs-com";
+import React, { useState } from "react";
 
 // [PANGGILAN RYAN JAWA: TOLONG KERJAIN DARI SINI YOW]
 export default function ContactScreen() {
+    const [formData, setFormData] = useState({name: "", email: "", message: ""});
+    const [status, setStatus] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({...formData, [e.target.name]: e.target.value});
+    }
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+        setStatus("")
+
+        emailjs
+            .send(
+              "service_2pg8rjt", // service ID 
+              "template_6uh0zh7", // template ID
+              formData,
+              "NImCIHWKboR__iBCM" // public key
+            )
+            .then(() => {
+                setStatus("Message sent successfully!");
+                setFormData({name: "", email: "", message: ""});
+            })
+            .catch((error) => {
+                console.error("Error sending message", error);
+                setStatus("Failed to send message. Try again later.");
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
     return (
         <MainLayout needProtection={false}>
             <div className="w-full min-h-screen flex flex-col bg-gradient-to-b from-emerald-50 to-emerald-100 text-gray-800">
@@ -26,12 +63,16 @@ export default function ContactScreen() {
                     Send us a message 🌾
                     </h2>
 
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
                     <div>
                         <label className="block font-medium mb-2">Name</label>
                         <input
                         type="text"
                         placeholder="Your name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
                         className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
                         />
                     </div>
@@ -40,6 +81,10 @@ export default function ContactScreen() {
                         <input
                         type="email"
                         placeholder="you@example.com"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
                         className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
                         />
                     </div>
@@ -48,17 +93,42 @@ export default function ContactScreen() {
                         <textarea
                         rows={5}
                         placeholder="Tell us what’s on your mind..."
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
                         className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
                         />
                     </div>
                     <div className="text-center">
                         <button
                         type="submit"
-                        className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-8 py-3 rounded-lg transition shadow-md"
+                        disabled={
+                            loading ||
+                            !formData.name.trim() ||
+                            !formData.email.trim() ||
+                            !formData.message.trim()
+                        }
+                        className={`${
+                            loading ||
+                            !formData.name.trim() ||
+                            !formData.email.trim() ||
+                            !formData.message.trim()
+                                ? "bg-emerald-300 cursor-not-allowed"
+                                : "bg-emerald-500 hover:bg-emerald-600"
+                        } text-white font-semibold px-8 py-3 rounded-lg transition shadow-md flex items-center justify-center gap-2 mx-auto`}
                         >
-                        Send Message
+                            {loading ? (
+                                <>
+                                    <span className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    Sending...
+                                </>
+                            ) : (
+                                "Send Message"
+                            )}
                         </button>
                     </div>
+                    {status && <p className="mt-4 text-center text-gray-700">{status}</p>}
                     </form>
                 </div>
                 </section>
