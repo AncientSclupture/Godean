@@ -14,6 +14,7 @@ export default function FinanceLeagueGame() {
     const { setNotificationData } = React.useContext(NotificationContext);
     const [error, setError] = React.useState<string | null>(null);
     const [registered, setRegistered] = React.useState<boolean | null>(null);
+    const [alias, setAlias] = React.useState<string | null>(null);
 
     React.useEffect(() => {
         async function fetchData() {
@@ -28,11 +29,12 @@ export default function FinanceLeagueGame() {
                 })
 
                 const data = await response.json();
-                console.log(data)
 
                 if (response.status === 200) {
+                    setAlias(data.data.name);
+                    console.log(data.data.name);
                     setRegistered(true);
-                } else if (response.status === 404){
+                } else if (response.status === 404) {
                     setRegistered(false);
                 }
                 else {
@@ -56,7 +58,7 @@ export default function FinanceLeagueGame() {
 
     if (isSelfCheckLoading) return <LoaderComponent fullScreen={true} />
 
-    if (!isLoggedIn || !accountid) {
+    if (!isLoggedIn || !accountid || !alias) {
         return (
             <MainLayout>
                 <ErrorHappened message="User not logged in or account ID missing." />
@@ -77,7 +79,7 @@ export default function FinanceLeagueGame() {
     return (
         <MainLayout>
             <div className="h-screen w-full flex items-center justify-center">
-                <FiGame accountId={accountid} />
+                <FiGame accountId={accountid} alias={alias} />
             </div>
         </MainLayout>
     )

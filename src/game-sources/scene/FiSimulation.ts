@@ -12,14 +12,24 @@ import femaleCowTiles from "../tile-asset/Female Cow Brown.png";
 
 export default class FiSimScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
-  private otherPlayers: { [id: string]: Phaser.Physics.Arcade.Sprite } = {};
+  private otherPlayers: {
+    [id: string]: {
+      sprite: Phaser.Physics.Arcade.Sprite;
+      label: Phaser.GameObjects.Text;
+    };
+  } = {};
   private keys!: any;
   private socket!: Socket;
   private roomId = "w2e";
   private userId!: string;
+  private userAlias!: string;
   private onGateway: boolean = false;
   private initialXSpawnPosition = 956;
   private initialYSpawnPosition = 533;
+  private playerMark!: Phaser.GameObjects.Text;
+  private chatBg!: Phaser.GameObjects.Graphics;
+  private chatText!: Phaser.GameObjects.Text;
+  private chatBox!: Phaser.GameObjects.Container;
 
   constructor() {
     super("FiSimScene");
@@ -43,9 +53,10 @@ export default class FiSimScene extends Phaser.Scene {
     });
   }
 
-  init(data: { accountId: string }) {
+  init(data: { accountId: string; alias: string }) {
     console.log("Scene init w2e scene data:", data);
     this.userId = data.accountId;
+    this.userAlias = data.alias;
     this.onGateway = false;
   }
 
@@ -76,6 +87,17 @@ export default class FiSimScene extends Phaser.Scene {
         state[userId].y ?? this.initialYSpawnPosition;
       this.syncPlayers(state);
     });
+
+    this.chatBg = this.add.graphics();
+    this.chatBg.fillStyle(0x000000, 0.7);
+    this.chatBg.fillRoundedRect(50, 400, 700, 100, 10);
+    this.chatText = this.add.text(70, 420, "", {
+      fontSize: "10px",
+      color: "#ffffff",
+      wordWrap: { width: 660 },
+    });
+    this.chatBox = this.add.container(0, 0, [this.chatBg, this.chatText]);
+    this.chatBox.setVisible(true);
 
     this.anims.create({
       key: "walk-down",
@@ -120,6 +142,7 @@ export default class FiSimScene extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
 
     const keyF = this.input.keyboard!.addKey("F");
@@ -149,15 +172,35 @@ export default class FiSimScene extends Phaser.Scene {
       "player-idle",
       0
     );
+    this.playerMark = this.add
+      .text(this.player.x, this.player.y - 20, this.userAlias, {
+        fontFamily: "Arial Black",
+        fontSize: "8px",
+        color: "#fff",
+        backgroundColor: "rgba(0,0,0,0.3)",
+        stroke: "#000",
+        strokeThickness: 2,
+        shadow: {
+          offsetX: 2,
+          offsetY: 2,
+          color: "#000",
+          blur: 2,
+          fill: true,
+        },
+      })
+      .setOrigin(0.5);
+
     this.physics.add.collider(
       this.player,
       objectLayer!,
       (_player, tile: any) => {
         if (tile?.properties?.gateway) {
           this.onGateway = true;
-          console.log(">> Gateway aktif");
+          console.log("gaetway is active");
         } else {
           this.onGateway = false;
+          console.log("gaetway is not active");
+          // this.hideChat();
         }
       }
     );
@@ -191,6 +234,10 @@ export default class FiSimScene extends Phaser.Scene {
     } else if (this.keys.down.isDown) {
       this.player.setVelocityY(speed);
       this.player.anims.play("walk-down", true);
+    } else if (this.keys.space.isDown) {
+      if (this.onGateway) {
+        this.showChat("Halo petualang! Tekan [E] untuk bicara.");
+      }
     }
 
     const userId = this.userId;
@@ -200,39 +247,60 @@ export default class FiSimScene extends Phaser.Scene {
       x: player.x,
       y: player.y,
     });
-
-    // buat ganti scene
-    const space = this.input.keyboard!.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE
-    );
-    if (Phaser.Input.Keyboard.JustDown(space) && this.onGateway) {
-      this.scene.start("HouseScene", { accountId: this.userId });
-    }
+    this.playerMark.setPosition(player.x, player.y - 20);
   }
 
   private syncPlayers(state: { [id: string]: { x: number; y: number } }) {
     for (const id in state) {
-      if (id === this.userId || !id || id === null) {
-        continue;
-      }
+      if (id === this.userId || !id) continue;
 
-      if (!this.otherPlayers[id]) {
-        this.otherPlayers[id] = this.physics.add.sprite(
-          state[id].x,
-          state[id].y,
+      const playerData = state[id];
+      const existing = this.otherPlayers[id];
+
+      if (!existing) {
+        // 🔹 Tambahkan sprite
+        const sprite = this.physics.add.sprite(
+          playerData.x,
+          playerData.y,
           "player-idle",
           0
         );
+
+        // 🔹 Tambahkan teks label di atas kepala
+        const label = this.add
+          .text(playerData.x, playerData.y - 20, id, {
+            fontFamily: '"Press Start 2P", monospace', // bisa ganti
+            fontSize: "8px",
+            color: "#ffffff",
+            stroke: "#000000",
+            strokeThickness: 3,
+          })
+          .setOrigin(0.5, 1);
+
+        this.otherPlayers[id] = { sprite, label };
       } else {
-        this.otherPlayers[id].setPosition(state[id].x, state[id].y);
+        // 🔹 Update posisi sprite dan teks
+        existing.sprite.setPosition(playerData.x, playerData.y);
+        existing.label.setPosition(playerData.x, playerData.y - 20);
       }
     }
 
+    // 🔹 Hapus player yang sudah tidak ada di state
     for (const id in this.otherPlayers) {
       if (!state[id]) {
-        this.otherPlayers[id].destroy();
+        this.otherPlayers[id].sprite.destroy();
+        this.otherPlayers[id].label.destroy();
         delete this.otherPlayers[id];
       }
     }
   }
+
+  private showChat(text: string) {
+    this.chatText.setText(text);
+    this.chatBox.setVisible(true);
+  }
+
+  // private hideChat() {
+  //   this.chatBox.setVisible(false);
+  // }
 }

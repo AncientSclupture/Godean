@@ -1,7 +1,7 @@
 import React from "react";
 import FiSimScene from "./scene/FiSimulation";
 
-const FiGame = ({ accountId }: { accountId: string }) => {
+const FiGame = ({ accountId, alias }: { accountId: string, alias: string }) => {
     React.useEffect(() => {
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
@@ -21,12 +21,12 @@ const FiGame = ({ accountId }: { accountId: string }) => {
         const game = new Phaser.Game(config);
         game.scene.add("FiSimScene", FiSimScene);
 
-        game.scene.start("FiSimScene", { accountId });
+        game.scene.start("FiSimScene", { accountId, alias });
 
         return () => {
             game.destroy(true)
         }
-    }, [accountId]);
+    }, [accountId, alias]);
 
     return <div id="game-container" />
 }
