@@ -1,9 +1,8 @@
 import React from "react";
 import { MainLayout } from "../components/main-layout";
-// import Game from "../game-sources/Game";
 import { AuthenticationContext } from "../context/AuthContext";
 import ErrorHappened from "../components/error-happened";
-import PlayGame from "../game-sources/PlayGame";
+import MainActivityGame from "../game-sources/scene/main-actifity-game";
 
 export default function ActifityScreen() {
     const { isLoggedIn, accountid } = React.useContext(AuthenticationContext);
@@ -19,7 +18,7 @@ export default function ActifityScreen() {
     return (
         <MainLayout>
             <div className="h-screen w-full flex items-center justify-center">
-                <PlayGame accountId={accountid} />
+                <MainActivityGame />
             </div>
         </MainLayout>
     )

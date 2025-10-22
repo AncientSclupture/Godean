@@ -2,7 +2,6 @@
 import React from "react";
 import { AuthenticationContext } from "../context/AuthContext";
 import { MainLayout } from "../components/main-layout";
-import FiGame from "../game-sources/FiSimGame";
 import { LoaderComponent } from "../components/LoaderComponent";
 import { NotificationContext } from "../context/NotificationContext";
 import ErrorHappened from "../components/error-happened";
@@ -79,7 +78,7 @@ export default function FinanceLeagueGame() {
     return (
         <MainLayout>
             <div className="h-screen w-full flex items-center justify-center">
-                <FiGame accountId={accountid} alias={alias} />
+                <div>hallo world</div>
             </div>
         </MainLayout>
     )
