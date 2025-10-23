@@ -70,7 +70,7 @@ export default function RegistFiLeague() {
         <MainLayout>
             <div className="flex flex-col items-center justify-center h-[80vh] px-4">
                 <h1 className="text-3xl font-semibold mb-6 text-center text-gray-800">
-                    Daftar ke Finance League
+                    Daftar untuk Melanjutkan
                 </h1>
 
                 <form
