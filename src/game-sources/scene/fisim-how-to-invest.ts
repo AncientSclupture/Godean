@@ -19,7 +19,6 @@ export default class FisimHowToInvestScene extends Phaser.Scene {
   private playerLabel!: Phaser.GameObjects.Text;
   private map!: Phaser.Tilemaps.Tilemap;
 
-  private waterLayer!: Phaser.Tilemaps.TilemapLayer;
   private stuffLayer!: Phaser.Tilemaps.TilemapLayer;
 
   // private howtoDefineLayer!: Phaser.Tilemaps.TilemapLayer;
@@ -127,7 +126,7 @@ export default class FisimHowToInvestScene extends Phaser.Scene {
     this.map.addTilesetImage("Bridge_Wood", "Bridge_Wood");
     this.map.addTilesetImage("Chest", "Chest");
 
-    this.waterLayer = this.map.createLayer(
+    this.map.createLayer(
       "water",
       [waterTile!, cliffTile!],
       0,
