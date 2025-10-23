@@ -5,7 +5,8 @@ import { createContext, useState } from "react";
 export enum ModalKindEnum {
     loginopt = "loginopt",
     fileaguedetails = "fileaguedetails",
-    gamedetails = "gamedetails"
+    gamedetails = "gamedetails",
+    applyw2e = "applyw2e",
 }
 
 export type ModalContextType = {

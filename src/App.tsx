@@ -27,16 +27,16 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <PopUpProvider>
-        <ModalProvider>
-          <GameTransitionDataProvider>
+      <GameTransitionDataProvider>
+        <PopUpProvider>
+          <ModalProvider>
             <Router>
               <Routes>
                 <Route path="/" element={<Landing />} index />
                 <Route path="/about" element={<AboutGameScreen />} />
                 <Route path="/faq" element={<FaQScreen />} />
                 <Route path="/contact" element={<ContactScreen />} />
-                
+
                 <Route path="/play" element={<ActifityScreen />} />
                 <Route path="/fi-leaguage" element={<FinanceLeagueScreen />} />
                 <Route path="/w2e" element={<W2EScreen />} />
@@ -45,20 +45,20 @@ export default function App() {
                 <Route path="/play-fisim-whoisfraud" element={<FinanceLeagueWhoIsFraudGameScreen />} />
                 <Route path="/play-fisim-doiknow" element={<FinanceLeagueDoIKnowInvestmentGameScreen />} />
                 <Route path="/play-fisim-realinvestment" element={<FinanceLeagueGameScreen />} />
-                
+
                 <Route path="/play-peacefull-village" element={<PeacefullVillageGameScreen />} />
                 <Route path="/play-adventure-survival" element={<AdventureSurivivalGameScreen />} />
                 <Route path="/play-hideandseek" element={<HideAndSeekGameScreen />} />
-                
+
                 {/* debug playgorund */}
                 <Route path="/test" element={<TestSM />} />
                 <Route path="/test-socket" element={<TestSocket />} />
 
               </Routes>
             </Router>
-          </GameTransitionDataProvider>
-        </ModalProvider>
-      </PopUpProvider>
+          </ModalProvider>
+        </PopUpProvider>
+      </GameTransitionDataProvider>
     </AuthProvider>
   )
 }

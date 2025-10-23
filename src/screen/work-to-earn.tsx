@@ -5,6 +5,7 @@ const WorkToEarnData: {
     id: string | null;
     title: string;
     briefdescription: string;
+    contract: string;
     details: {
         tokenprice: number;
         deadline: number;
@@ -15,6 +16,7 @@ const WorkToEarnData: {
             id: 'task-001',
             title: 'Translate short article to Indonesian',
             briefdescription: 'Translate a 300-word English article into fluent Indonesian.',
+            contract: "./task-001_contract.pdf",
             details: {
                 tokenprice: 800,
                 deadline: new Date('2025-10-20T23:59:59').getTime(),
@@ -25,6 +27,7 @@ const WorkToEarnData: {
             id: 'task-002',
             title: 'Label 100 product images',
             briefdescription: 'Tag product categories (e.g., shoes, bags, electronics) for 100 images.',
+            contract: "./task-002_contract.pdf",
             details: {
                 tokenprice: 1500,
                 deadline: new Date('2025-10-22T18:00:00').getTime(),
@@ -35,6 +38,7 @@ const WorkToEarnData: {
             id: 'task-003',
             title: 'Write a 200-word product review',
             briefdescription: 'Write an honest review of a smart home device based on given specifications.',
+            contract: "./task-003_contract.pdf",
             details: {
                 tokenprice: 1000,
                 deadline: new Date('2025-10-25T12:00:00').getTime(),
@@ -45,6 +49,7 @@ const WorkToEarnData: {
             id: 'task-004',
             title: 'Transcribe short audio clip',
             briefdescription: 'Transcribe a 2-minute English audio recording accurately.',
+            contract: "./task-004_contract.pdf",
             details: {
                 tokenprice: 600,
                 deadline: new Date('2025-10-19T15:00:00').getTime(),
@@ -55,6 +60,7 @@ const WorkToEarnData: {
             id: 'task-005',
             title: 'Collect feedback on mobile app UI',
             briefdescription: 'Test a new mobile app and provide usability feedback.',
+            contract: "./task-005_contract.pdf",
             details: {
                 tokenprice: 2000,
                 deadline: new Date('2025-10-28T09:00:00').getTime(),
@@ -65,6 +71,7 @@ const WorkToEarnData: {
             id: 'task-006',
             title: 'Summarize a YouTube video',
             briefdescription: 'Watch a 5-minute educational video and create a short summary.',
+            contract: "./task-006_contract.pdf",
             details: {
                 tokenprice: 900,
                 deadline: new Date('2025-10-23T22:00:00').getTime(),

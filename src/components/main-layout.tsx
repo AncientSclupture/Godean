@@ -9,6 +9,7 @@ import { AuthenticationContext } from "../context/AuthContext";
 import Forbidden from "./forbiden";
 import ModalGameDetails from "./modal/game-details";
 import ModalFiLeagueDetails from "./modal/fileague-details";
+import ModalApplyW2E from "./modal/apply-w2e";
 
 export function MainLayout({ needProtection = true, children }: { needProtection?: boolean, children: React.ReactNode }) {
     const { isLoggedIn } = React.useContext(AuthenticationContext);
@@ -28,6 +29,7 @@ export function MainLayout({ needProtection = true, children }: { needProtection
                     { name: ModalKindEnum.loginopt, component: <ModalLoginOption /> },
                     { name: ModalKindEnum.gamedetails, component: <ModalGameDetails /> },
                     { name: ModalKindEnum.fileaguedetails, component: <ModalFiLeagueDetails /> },
+                    { name: ModalKindEnum.applyw2e, component: <ModalApplyW2E /> },
                 ]}
             />
 

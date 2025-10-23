@@ -1,10 +1,13 @@
 import React from "react";
 import { CalendarDays, ChevronDown, ChevronUp, Coins, Info } from "lucide-react";
+import { ModalContext, ModalKindEnum } from "../../context/ModalContext";
+import { GameTransitionDataContext } from "../../context/GameTransitionDataContext";
 
 interface WorkToEarnItem {
     id: string | null;
     title: string;
     briefdescription: string;
+    contract: string;
     details: {
         tokenprice: number;
         deadline: number;
@@ -14,6 +17,9 @@ interface WorkToEarnItem {
 
 export default function CardJob({ item }: { item: WorkToEarnItem }) {
     const [isOpen, setIsOpen] = React.useState(false);
+
+    const { setModalKind } = React.useContext(ModalContext);
+    const { w2eApplyManagement } = React.useContext(GameTransitionDataContext);
 
     const toggleAccordion = () => setIsOpen((prev) => !prev);
 
@@ -73,7 +79,19 @@ export default function CardJob({ item }: { item: WorkToEarnItem }) {
                     )}
 
                     <div className="pt-3 flex justify-end">
-                        <button className="background-dark text-white py-2 px-4 rounded-lg text-sm transition-colors">
+                        <button
+                            onClick={() => { 
+                                w2eApplyManagement.setter(
+                                    Math.floor(Math.random() * 100),
+                                    deadlineDate,
+                                    item.contract,
+                                    item.details.tokenprice,
+                                    item.details.info ?? null,
+                                )
+                                setModalKind(ModalKindEnum.applyw2e)
+                            }}
+                            className="background-dark text-white py-2 px-4 rounded-lg text-sm transition-colors"
+                        >
                             Apply Now
                         </button>
                     </div>

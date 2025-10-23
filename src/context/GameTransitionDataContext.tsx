@@ -23,6 +23,23 @@ export type GameTransitionDataContextType = {
             slash: string | null
         ) => void;
     };
+    w2eApplyManagement: {
+        data: {
+            biddersCount: number | null;
+            deadline: string | null;
+            contract: string | null;
+            reward: number | null;
+            tasks: string[] | null;
+        };
+        reseter: () => void;
+        setter: (
+            biddersCount: number | null,
+            deadline: string | null,
+            contract: string | null,
+            reward: number | null,
+            tasks: string[] | null,
+        ) => void;
+    };
 };
 
 export const GameTransitionDataContext = createContext<GameTransitionDataContextType>({
@@ -35,6 +52,11 @@ export const GameTransitionDataContext = createContext<GameTransitionDataContext
         reseter: () => { },
         setter: () => { },
     },
+    w2eApplyManagement: {
+        data: { biddersCount: null, deadline: null, reward: null, tasks: null, contract: null },
+        reseter: () => { },
+        setter: () => { },
+    }
 });
 
 export const GameTransitionDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -52,6 +74,19 @@ export const GameTransitionDataProvider: React.FC<{ children: React.ReactNode }>
         imageplaceholder: null,
         reward: null,
         slash: null
+    });
+    const [w2eApplyData, setW2eApplyData] = useState<{
+        biddersCount: number | null;
+        deadline: string | null;
+        contract: string | null;
+        reward: number | null;
+        tasks: string[] | null;
+    }>({
+        biddersCount: null,
+        deadline: null,
+        contract: null,
+        reward: null,
+        tasks: null,
     });
 
     const changeRequiredId = (d: string | null) => {
@@ -76,6 +111,20 @@ export const GameTransitionDataProvider: React.FC<{ children: React.ReactNode }>
         setGameCoverData({ name: null, description: null, imageplaceholder: null, reward: null, slash: null });
     };
 
+    const setW2eApply = (
+        biddersCount: number | null,
+        deadline: string | null,
+        contract: string | null,
+        reward: number | null,
+        tasks: string[] | null,
+    ) => {
+        setW2eApplyData({ biddersCount, deadline, contract, reward, tasks });
+    };
+
+    const resetW2eApply = () => {
+        setW2eApplyData({ biddersCount: null, deadline: null, contract: null, reward: null, tasks: null });
+    };
+
     return (
         <GameTransitionDataContext.Provider
             value={{
@@ -88,6 +137,11 @@ export const GameTransitionDataProvider: React.FC<{ children: React.ReactNode }>
                     reseter: resetGameCover,
                     setter: setGameCover,
                 },
+                w2eApplyManagement: {
+                    data: w2eApplyData,
+                    reseter: resetW2eApply,
+                    setter: setW2eApply,
+                }
             }}
         >
             {children}
