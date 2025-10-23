@@ -21,6 +21,15 @@ export default class MainActifityScene extends Phaser.Scene {
   private playerLabel!: Phaser.GameObjects.Text;
   private map!: Phaser.Tilemaps.Tilemap;
   private roadnhouselayer!: Phaser.Tilemaps.TilemapLayer;
+  private inventoryBar!: Phaser.GameObjects.Container;
+  private inventorySlots: {
+    name: string;
+    sprite: Phaser.GameObjects.Sprite;
+    border: Phaser.GameObjects.Graphics;
+  }[] = [];
+  private selectedPlant: "carrot" | "turnip" | "wheat" = "wheat";
+  private showBar: "inventory" | "wallet" | "" = "";
+  private farmOverlay!: Phaser.GameObjects.Graphics;
 
   // private howtoDefineLayer!: Phaser.Tilemaps.TilemapLayer;
 
@@ -78,11 +87,16 @@ export default class MainActifityScene extends Phaser.Scene {
       }
     });
 
+    this.farmOverlay = this.add.graphics();
+    this.farmOverlay.setDepth(998);
+    this.farmOverlay.setVisible(false);
+
     this.setupKeys();
     this.setUpMapAndTileSet();
     this.setupSpriteSheet();
     this.setupPlayer();
     this.collisionLogic();
+    this.setupInventoryBar();
   }
 
   update() {
@@ -110,7 +124,7 @@ export default class MainActifityScene extends Phaser.Scene {
     } else if (this.keys.space.isDown) {
       this.startActivity();
     } else if (this.keys.e.isDown) {
-      this.plantSomething("carrot", this.player.x, this.player.y);
+      this.plantSomething(this.selectedPlant);
     } else {
       this.playIdle();
     }
@@ -118,6 +132,12 @@ export default class MainActifityScene extends Phaser.Scene {
     if (this.player && this.playerLabel) {
       this.playerLabel.setPosition(this.player.x, this.player.y - 20);
     }
+
+    this.time.addEvent({
+      delay: 200, // cek setiap 0.2 detik
+      loop: true,
+      callback: () => this.showBarHandler(),
+    });
   }
 
   private setupKeys() {
@@ -144,10 +164,7 @@ export default class MainActifityScene extends Phaser.Scene {
     );
     const farmTile = this.map.addTilesetImage("FarmLand_Tile", "FarmLand_Tile");
     const bridgeTile = this.map.addTilesetImage("Bridge_Wood", "Bridge_Wood");
-    this.map.addTilesetImage(
-      "Outdoor_Decor_Free",
-      "Outdoor_Decor_Free"
-    );
+    this.map.addTilesetImage("Outdoor_Decor_Free", "Outdoor_Decor_Free");
 
     this.map.createLayer("base", pathTile!, 0, 0);
     this.map.createLayer("grassnwater", [waterTile!, cliffTile!], 0, 0)!;
@@ -185,9 +202,136 @@ export default class MainActifityScene extends Phaser.Scene {
     );
   }
 
+  private setupInventoryBar() {
+    const slotSize = 24;
+    const slotSpacing = 10;
+    const items = ["carrot", "turnip", "wheat"];
+    const totalWidth =
+      items.length * slotSize + (items.length - 1) * slotSpacing;
+
+    this.inventoryBar = this.add.container(0, 0);
+    this.inventoryBar.setDepth(999);
+
+    // Background panel
+    const bg = this.add.rectangle(
+      totalWidth / 2,
+      slotSize / 2,
+      totalWidth + 20,
+      slotSize + 12,
+      0x000000,
+      0.5
+    );
+    bg.setStrokeStyle(1, 0xffffff, 0.3);
+    this.inventoryBar.add(bg);
+
+    items.forEach((name, i) => {
+      let frameId = 20;
+      if (name === "carrot") frameId = 17;
+      else if (name === "turnip") frameId = 13;
+
+      const x = i * (slotSize + slotSpacing);
+
+      const border = this.add.graphics();
+      border.fillStyle(0x000000, 0.4);
+      border.fillRect(x, 0, slotSize, slotSize);
+      border.lineStyle(1, 0xffffff, 0.7);
+      border.strokeRect(x, 0, slotSize, slotSize);
+
+      const sprite = this.add.sprite(
+        x + slotSize / 2,
+        slotSize / 2,
+        "Outdoor_Decor_Free",
+        frameId
+      );
+      sprite.setDisplaySize(slotSize - 4, slotSize - 4);
+      sprite.setInteractive({ useHandCursor: true });
+
+      sprite.on("pointerdown", () => {
+        this.selectedPlant = name as any;
+        this.updateInventoryHighlight();
+      });
+
+      this.inventoryBar.add(border);
+      this.inventoryBar.add(sprite);
+      this.inventorySlots.push({ name, sprite, border });
+    });
+
+    this.updateInventoryHighlight();
+  }
+
+  private updateInventoryHighlight() {
+    this.inventorySlots.forEach((slot) => {
+      slot.border.clear();
+      if (slot.name === this.selectedPlant) {
+        slot.border.lineStyle(2, 0xffff00, 1);
+      } else {
+        slot.border.lineStyle(1, 0xffffff, 0.5);
+      }
+      slot.border.strokeRect(
+        slot.sprite.x - slot.sprite.displayWidth / 2,
+        slot.sprite.y - slot.sprite.displayHeight / 2,
+        slot.sprite.displayWidth,
+        slot.sprite.displayHeight
+      );
+    });
+  }
+
   private collisionLogic() {
     this.roadnhouselayer!.setCollisionByProperty({ collision: true });
     this.physics.add.collider(this.player, this.roadnhouselayer!);
+  }
+
+  private showBarHandler() {
+    let offsetX = 0;
+    let offsetY = 0;
+
+    switch (this.playerCurrentDirection) {
+      case "front":
+        offsetY = 16;
+        break;
+      case "back":
+        offsetY = -16;
+        break;
+      case "left":
+        offsetX = -16;
+        break;
+      case "right":
+        offsetX = 16;
+        break;
+    }
+
+    const playerTileX = this.map.worldToTileX(this.player.x + offsetX);
+    const playerTileY = this.map.worldToTileY(this.player.y + offsetY);
+    const tile = this.roadnhouselayer!.getTileAt(playerTileX!, playerTileY!);
+
+    this.farmOverlay.clear();
+
+    if (tile?.properties?.farmable) {
+      this.showBar = "inventory";
+      this.playerCurrentAcifity = "nyekop";
+
+      const worldX = this.map.tileToWorldX(playerTileX!);
+      const worldY = this.map.tileToWorldY(playerTileY!);
+      const tileSize = this.map.tileWidth;
+
+      this.farmOverlay.fillStyle(0x00ff00, 0.3);
+      this.farmOverlay.fillRect(worldX!, worldY!, tileSize, tileSize);
+      this.farmOverlay.lineStyle(1, 0x00ff00, 0.8);
+      this.farmOverlay.strokeRect(worldX!, worldY!, tileSize, tileSize);
+
+      this.farmOverlay.setVisible(true);
+    } else {
+      this.showBar = "";
+      this.farmOverlay.setVisible(false);
+    }
+
+    // Atur posisi inventory bar
+    if (this.player && this.inventoryBar && this.showBar === "inventory") {
+      this.inventoryBar.setPosition(this.player.x - 40, this.player.y + 25);
+      this.inventoryBar.setVisible(true);
+    } else if (this.inventoryBar) {
+      this.inventoryBar.setVisible(false);
+    }
   }
 
   private setupSpriteSheet() {
@@ -420,8 +564,35 @@ export default class MainActifityScene extends Phaser.Scene {
     this.player.anims.play(animKey, true);
   }
 
-  private plantSomething(name: string, x: number, y: number) {
+  private plantSomething(name: string) {
     let id: number = 20; // default wheat
+
+    // Tentukan offset tile (bukan pixel)
+    let offsetTileX = 0;
+    let offsetTileY = 0;
+
+    switch (this.playerCurrentDirection) {
+      case "front":
+        offsetTileY = 1;
+        break;
+      case "back":
+        offsetTileY = -1;
+        break;
+      case "left":
+        offsetTileX = -1;
+        break;
+      case "right":
+        offsetTileX = 1;
+        break;
+    }
+
+    // Ambil posisi tile tempat player berdiri
+    const playerTileX = this.map.worldToTileX(this.player.x);
+    const playerTileY = this.map.worldToTileY(this.player.y);
+
+    // Tentukan tile target di depan player
+    const targetTileX = playerTileX! + offsetTileX;
+    const targetTileY = playerTileY! + offsetTileY;
 
     switch (name.toLowerCase()) {
       case "carrot":
@@ -439,7 +610,10 @@ export default class MainActifityScene extends Phaser.Scene {
         break;
     }
 
-    const plant = this.add.sprite(x, y, "Outdoor_Decor_Free");
+    const worldX = targetTileX * 16 + 8;
+    const worldY = targetTileY * 16 + 8;
+
+    const plant = this.add.sprite(worldX, worldY, "Outdoor_Decor_Free");
     plant.setFrame(id);
 
     return plant;
