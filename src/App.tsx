@@ -30,7 +30,16 @@ export default function App() {
                 <Route path="/about" element={<AboutGameScreen />} />
                 <Route path="/faq" element={<FaQScreen />} />
                 <Route path="/contact" element={<ContactScreen />} />
-                <Route path="/play-fisim" element={<FinanceLeagueGame />} />
+
+                {/* games and scene setup */}
+                <Route path="/play-fisim-whoisfraud" element={<FinanceLeagueGame />} />
+                <Route path="/play-fisim-doiknow" element={<FinanceLeagueGame />} />
+                <Route path="/play-fisim-realinvestment" element={<FinanceLeagueGame />} />
+                
+                <Route path="/play-peacefull-village" element={<FinanceLeagueGame />} />
+                <Route path="/play-peacefull-survival" element={<FinanceLeagueGame />} />
+                <Route path="/play-peacefull-hideandseek" element={<FinanceLeagueGame />} />
+                
                 {/* debug playgorund */}
                 <Route path="/test" element={<TestSM />} />
                 <Route path="/test-socket" element={<TestSocket />} />

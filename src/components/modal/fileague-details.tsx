@@ -18,7 +18,7 @@ export default function ModalFiLeagueDetails() {
   function handleStart() {
     if (!agreed) return
     setModalKind(null);
-    navigate("/play-fisim");
+    navigate("/play-fisim-whoisfraud");
   }
 
   return (

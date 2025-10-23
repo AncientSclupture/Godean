@@ -15,7 +15,7 @@ import outdordecortileImage from "../asset-and-tileset/Outdoor_Decor_Free.png";
 import playeractifitySpriteSheet from "../asset-and-tileset/Player.png";
 import playerfarmingSpriteSheet from "../asset-and-tileset/Player_Actions.png";
 
-export default class MainActifityScene extends Phaser.Scene {
+export default class PeacefullVillageScene extends Phaser.Scene {
   private keys!: any;
   private player!: Phaser.Physics.Arcade.Sprite;
   private playerLabel!: Phaser.GameObjects.Text;
@@ -47,7 +47,7 @@ export default class MainActifityScene extends Phaser.Scene {
     | "atk" = "atk";
 
   constructor() {
-    super("MainActifityScene");
+    super("PeacefullVillageScene");
   }
 
   init(data: { accountId: string }) {

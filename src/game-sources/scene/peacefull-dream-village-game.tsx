@@ -1,7 +1,7 @@
 import React from "react";
-import MainActifityScene from "./main-acifity";
+import PeacefullVillageScene from "./peacefull-village";
 
-const MainActivityGame = () => {
+const PeacefullVillageDreamGame = () => {
     React.useEffect(() => {
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
@@ -19,9 +19,9 @@ const MainActivityGame = () => {
         };
 
         const game = new Phaser.Game(config);
-        game.scene.add("MainActifityScene", MainActifityScene)
+        game.scene.add("PeacefullVillageScene", PeacefullVillageScene)
 
-        game.scene.start("MainActifityScene");
+        game.scene.start("PeacefullVillageScene");
 
         return () => {
             game.destroy(true)
@@ -31,4 +31,4 @@ const MainActivityGame = () => {
     return <div id="game-container" />
 }
 
-export default MainActivityGame;
+export default PeacefullVillageDreamGame;
