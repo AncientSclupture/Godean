@@ -2,23 +2,22 @@ import React from "react"
 import { ModalContext, ModalKindEnum } from "../../context/ModalContext"
 import { GameTransitionDataContext } from "../../context/GameTransitionDataContext"
 
-interface CardIntroFiLeagueProps {
+interface CardIntroMainActivityProps {
     id: string | null;
     name: string;
     description: string;
     imageCover: string;
-    reward: number;
     slash: string;
 }
 
-export function CardIntroFiLeague({ id, name, description, imageCover, reward, slash }: CardIntroFiLeagueProps) {
-    const { setModalKind } = React.useContext(ModalContext);
+export function CardIntroMainActifity({ id, name, description, imageCover, slash }: CardIntroMainActivityProps) {
     const { setRequiredId, gameCoverManagement } = React.useContext(GameTransitionDataContext);
+    const { setModalKind } = React.useContext(ModalContext);
 
     const handleStart = () => {
-        setModalKind(ModalKindEnum.fileaguedetails);
+        setModalKind(ModalKindEnum.gamedetails);
         setRequiredId(id);
-        gameCoverManagement.setter(name, description, imageCover, reward, slash)
+        gameCoverManagement.setter(name, description, imageCover, null, slash)
     }
 
     return (

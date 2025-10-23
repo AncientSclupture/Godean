@@ -1,7 +1,7 @@
 import React from "react";
-import FiSimScene from "./scene/FiSimulation";
+import HideAndSeekScene from "./hide-and-seek";
 
-const FiGame = ({ accountId, alias }: { accountId: string, alias: string }) => {
+const HideAndSeek = () => {
     React.useEffect(() => {
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
@@ -9,26 +9,26 @@ const FiGame = ({ accountId, alias }: { accountId: string, alias: string }) => {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity: { x: 0, y: 0 },
-                }
+                    gravity: { x: 0, y: 0 }
+                },
             },
             scale: {
                 mode: Phaser.Scale.RESIZE,
-                autoCenter: Phaser.Scale.CENTER_BOTH,
+                autoCenter: Phaser.Scale.CENTER_BOTH
             }
         };
 
         const game = new Phaser.Game(config);
-        game.scene.add("FiSimScene", FiSimScene);
+        game.scene.add("HideAndSeekScene", HideAndSeekScene)
 
-        game.scene.start("FiSimScene", { accountId, alias });
+        game.scene.start("HideAndSeekScene");
 
         return () => {
             game.destroy(true)
         }
-    }, [accountId, alias]);
+    }, [])
 
     return <div id="game-container" />
 }
 
-export default FiGame;
+export default HideAndSeek;

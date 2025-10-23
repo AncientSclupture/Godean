@@ -1,9 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useState } from "react";
 
+
 export enum ModalKindEnum {
     loginopt = "loginopt",
-    fileaguedetails = "fileaguedetails"
+    fileaguedetails = "fileaguedetails",
+    gamedetails = "gamedetails"
 }
 
 export type ModalContextType = {

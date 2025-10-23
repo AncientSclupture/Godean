@@ -1,8 +1,7 @@
 import React from "react";
-import Phaser from "phaser";
-import NewScene from "./scene/NewScene";
+import PeacefullVillageScene from "./peacefull-village";
 
-const PlayGame = ({ accountId }: { accountId: string }) => {
+const PeacefullVillageDreamGame = () => {
     React.useEffect(() => {
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
@@ -10,24 +9,26 @@ const PlayGame = ({ accountId }: { accountId: string }) => {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity: { x: 0, y: 0 },
-                    // debug: true
-                }
+                    gravity: { x: 0, y: 0 }
+                },
             },
             scale: {
                 mode: Phaser.Scale.RESIZE,
-                autoCenter: Phaser.Scale.CENTER_BOTH,
+                autoCenter: Phaser.Scale.CENTER_BOTH
             }
-        }
+        };
+
         const game = new Phaser.Game(config);
-        game.scene.add("NewScene", NewScene);
-        game.scene.start("NewScene", { accountId });
+        game.scene.add("PeacefullVillageScene", PeacefullVillageScene)
+
+        game.scene.start("PeacefullVillageScene");
+
         return () => {
             game.destroy(true)
         }
-    }, [accountId]);
+    }, [])
 
     return <div id="game-container" />
 }
 
-export default PlayGame;
+export default PeacefullVillageDreamGame;

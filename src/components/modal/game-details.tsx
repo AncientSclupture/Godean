@@ -1,14 +1,12 @@
-import React, { useState } from "react"
+import React from "react"
 import { ModalContext } from "../../context/ModalContext"
 import { X } from "lucide-react"
 import { useNavigate } from "react-router";
 import { GameTransitionDataContext } from "../../context/GameTransitionDataContext";
 
-export default function ModalFiLeagueDetails() {
+export default function ModalGameDetails() {
   const navigate = useNavigate();
   const { setModalKind } = React.useContext(ModalContext)
-  const [agreed, setAgreed] = useState(false)
-
   const { gameCoverManagement } = React.useContext(GameTransitionDataContext);
 
   function handleClose() {
@@ -16,7 +14,6 @@ export default function ModalFiLeagueDetails() {
   }
 
   function handleStart() {
-    if (!agreed) return
     setModalKind(null);
     if (!gameCoverManagement.data.slash) return
     navigate(gameCoverManagement.data.slash);
@@ -50,37 +47,6 @@ export default function ModalFiLeagueDetails() {
               "Game edukasi finansial untuk melatih kemampuan analisis dan pengambilan keputusan investasi yang cerdas."}
           </p>
         </div>
-
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-          <h3 className="font-semibold text-gray-800 mb-2">🎯 Aturan Permainan</h3>
-          <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-            <li>Baca setiap kasus dan ambil tindakan yang paling logis.</li>
-            <li>Setiap tindakan akan berpengaruh skor kamu.</li>
-            <li>Jika skor melebihi ambang tertentu, kamu akan mendapatkan hadiah.</li>
-            <li>Game ini bersifat edukatif, tidak ada kehilangan uang asli.</li>
-          </ul>
-        </div>
-
-        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 flex items-center justify-between">
-          <div>
-            <h4 className="font-semibold text-indigo-700">🎁 Reward</h4>
-            <p className="text-sm text-indigo-600">{gameCoverManagement.data.reward || 0} Token + Sertifikat Terlegasi</p>
-          </div>
-          <div className="text-3xl">🏅</div>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            id="agreeRules"
-            type="checkbox"
-            checked={agreed}
-            onChange={(e) => setAgreed(e.target.checked)}
-            className="mr-2 accent-indigo-600"
-          />
-          <label htmlFor="agreeRules" className="text-sm text-gray-700">
-            Saya telah membaca dan menyetujui aturan permainan
-          </label>
-        </div>
       </div>
 
       <div className="p-4 border-t border-gray-200 flex justify-end space-x-2 bg-white rounded-b-2xl">
@@ -92,11 +58,7 @@ export default function ModalFiLeagueDetails() {
         </button>
         <button
           onClick={handleStart}
-          disabled={!agreed}
-          className={`py-2 px-4 rounded-lg text-white font-semibold transition 
-            ${agreed
-              ? "background-dark hover:opacity-90"
-              : "bg-gray-400 cursor-not-allowed"}`}
+          className={`py-2 px-4 rounded-lg text-white font-semibold transition background-dark hover:opacity-90`}
         >
           Mulai Game
         </button>
