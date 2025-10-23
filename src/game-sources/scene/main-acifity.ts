@@ -37,9 +37,11 @@ export default class MainActifityScene extends Phaser.Scene {
   constructor() {
     super("MainActifityScene");
   }
+
   init(data: { accountId: string }) {
     console.log("Scene init data:", data);
   }
+
   preload() {
     this.load.tilemapTiledJSON("basemap", basemap);
     this.load.image("Bridge_Wood", bridgewoodtilesetImage);
@@ -49,7 +51,7 @@ export default class MainActifityScene extends Phaser.Scene {
     this.load.image("Path_Tile", pathtileImage);
     this.load.image("Water_Tile", watertileImage);
     this.load.image("Oak_Tree_Small", oaktreetileImage);
-    this.load.image("Outdoor_Decor_Free", outdordecortileImage);
+    // this.load.image("Outdoor_Decor_Free", outdordecortileImage);
 
     this.load.spritesheet("player-actifity-ss", playeractifitySpriteSheet, {
       frameWidth: 32,
@@ -58,6 +60,11 @@ export default class MainActifityScene extends Phaser.Scene {
     this.load.spritesheet("player-farming-ss", playerfarmingSpriteSheet, {
       frameWidth: 48,
       frameHeight: 48,
+    });
+
+    this.load.spritesheet("Outdoor_Decor_Free", outdordecortileImage, {
+      frameWidth: 16,
+      frameHeight: 16,
     });
   }
 
@@ -102,6 +109,8 @@ export default class MainActifityScene extends Phaser.Scene {
       this.playerCurrentDirection = "front";
     } else if (this.keys.space.isDown) {
       this.startActivity();
+    } else if (this.keys.e.isDown) {
+      this.plantSomething("carrot", this.player.x, this.player.y);
     } else {
       this.playIdle();
     }
@@ -119,8 +128,7 @@ export default class MainActifityScene extends Phaser.Scene {
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-      p: Phaser.Input.Keyboard.KeyCodes.P,
-      c: Phaser.Input.Keyboard.KeyCodes.C,
+      e: Phaser.Input.Keyboard.KeyCodes.E,
     });
   }
 
@@ -136,11 +144,10 @@ export default class MainActifityScene extends Phaser.Scene {
     );
     const farmTile = this.map.addTilesetImage("FarmLand_Tile", "FarmLand_Tile");
     const bridgeTile = this.map.addTilesetImage("Bridge_Wood", "Bridge_Wood");
-    const oaktreeTile = this.map.addTilesetImage(
-      "Oak_Tree_Small",
-      "Oak_Tree_Small"
+    this.map.addTilesetImage(
+      "Outdoor_Decor_Free",
+      "Outdoor_Decor_Free"
     );
-    this.map.addTilesetImage("Outdoor_Decor_Free", "Outdoor_Decor_Free");
 
     this.map.createLayer("base", pathTile!, 0, 0);
     this.map.createLayer("grassnwater", [waterTile!, cliffTile!], 0, 0)!;
@@ -150,7 +157,6 @@ export default class MainActifityScene extends Phaser.Scene {
       0,
       0
     )!;
-    this.map.createLayer("summoning", oaktreeTile!)!;
   }
 
   private setupPlayer() {
@@ -412,5 +418,30 @@ export default class MainActifityScene extends Phaser.Scene {
     const animKey = `${type}-${flipLeft ? "right" : dir}`;
 
     this.player.anims.play(animKey, true);
+  }
+
+  private plantSomething(name: string, x: number, y: number) {
+    let id: number = 20; // default wheat
+
+    switch (name.toLowerCase()) {
+      case "carrot":
+        id = 17;
+        break;
+      case "wheat":
+        id = 20;
+        break;
+      case "turnip":
+        id = 13;
+        break;
+      default:
+        console.log(`Unknown plant: ${name}, using default (wheat)`);
+        id = 20;
+        break;
+    }
+
+    const plant = this.add.sprite(x, y, "Outdoor_Decor_Free");
+    plant.setFrame(id);
+
+    return plant;
   }
 }
