@@ -4,29 +4,33 @@ import { AuthenticationContext } from "../context/AuthContext";
 import ErrorHappened from "../components/error-happened";
 import { CardIntroMainActifity } from "../components/main-activity/card-intro";
 
-const FinanceLeagueData: {
-    id: string | null;
+const MainGameData: {
+    id: string;
     name: string;
     description: string;
     imageCover: string;
+    slash: string;
 }[] = [
         {
             id: "test-123",
             name: "Peacefull Village Dream",
             description: "Desa yang damai tetapi sibuk, kamu harus bertahan untuk bisa ada disini. Jika kamu harus menjadi pekerja keras dan cerdas. Farming, Bargain dan berinteraksi dengan player lain ",
-            imageCover: "./finance-game-cover.jpeg"
+            imageCover: "./finance-game-cover.jpeg",
+            slash: "/play-peacefull-village",
         },
         {
             id: "test-123",
             name: "Survival and Adventure",
             description: "Masuk kedalam hutan cari dan ambil resource yang kamu temui. Hati hati ada banyak monster yang akan mengahdang kamu!",
-            imageCover: "./finance-game-cover.jpeg"
+            imageCover: "./finance-game-cover.jpeg",
+            slash: "/play-adventure-survival",
         },
         {
             id: "test-123",
             name: "Hide and Seek",
             description: "Tangkap dan kejar hewan sebanyak mungkin, dapatkan hadiah secara acak. Uji keberuntungan kamu disini!",
-            imageCover: "./finance-game-cover.jpeg"
+            imageCover: "./finance-game-cover.jpeg",
+            slash: "/play-hideandseek",
         }
     ]
 
@@ -67,13 +71,14 @@ export default function ActifityScreen() {
                         </div>
                     </div>
                     <div className="p-5 space-y-5 md:space-y-0 flex md:flex-row flex-wrap justify-around">
-                        {FinanceLeagueData.map((d, idx) =>
+                        {MainGameData.map((d, idx) =>
                             <CardIntroMainActifity
                                 key={idx}
                                 id={d.id}
                                 name={d.name}
                                 description={d.description}
                                 imageCover={d.imageCover}
+                                slash={d.slash}
                             />
                         )}
                     </div>

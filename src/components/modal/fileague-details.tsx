@@ -18,7 +18,8 @@ export default function ModalFiLeagueDetails() {
   function handleStart() {
     if (!agreed) return
     setModalKind(null);
-    navigate("/play-fisim-whoisfraud");
+    if (!gameCoverManagement.data.slash) return
+    navigate(gameCoverManagement.data.slash);
   }
 
   return (

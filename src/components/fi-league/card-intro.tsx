@@ -8,16 +8,17 @@ interface CardIntroFiLeagueProps {
     description: string;
     imageCover: string;
     reward: number;
+    slash: string;
 }
 
-export function CardIntroFiLeague({ id, name, description, imageCover, reward }: CardIntroFiLeagueProps) {
+export function CardIntroFiLeague({ id, name, description, imageCover, reward, slash }: CardIntroFiLeagueProps) {
     const { setModalKind } = React.useContext(ModalContext);
     const { setRequiredId, gameCoverManagement } = React.useContext(GameTransitionDataContext);
 
     const handleStart = () => {
         setModalKind(ModalKindEnum.fileaguedetails);
         setRequiredId(id);
-        gameCoverManagement.setter(name, description, imageCover, reward)
+        gameCoverManagement.setter(name, description, imageCover, reward, slash)
     }
 
     return (

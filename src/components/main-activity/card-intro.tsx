@@ -4,19 +4,20 @@ import { GameTransitionDataContext } from "../../context/GameTransitionDataConte
 
 interface CardIntroMainActivityProps {
     id: string | null;
-    name: string
-    description: string
-    imageCover: string
+    name: string;
+    description: string;
+    imageCover: string;
+    slash: string;
 }
 
-export function CardIntroMainActifity({ id, name, description, imageCover }: CardIntroMainActivityProps) {
+export function CardIntroMainActifity({ id, name, description, imageCover, slash }: CardIntroMainActivityProps) {
     const { setRequiredId, gameCoverManagement } = React.useContext(GameTransitionDataContext);
     const { setModalKind } = React.useContext(ModalContext);
 
     const handleStart = () => {
         setModalKind(ModalKindEnum.gamedetails);
         setRequiredId(id);
-        gameCoverManagement.setter(name, description, imageCover, null)
+        gameCoverManagement.setter(name, description, imageCover, null, slash)
     }
 
     return (

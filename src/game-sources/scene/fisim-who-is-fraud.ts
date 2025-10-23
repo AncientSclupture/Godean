@@ -2,13 +2,12 @@
 
 import Phaser from "phaser";
 
-import basemap from "../map-json/base-map.json";
-import bridgewoodtilesetImage from "../asset-and-tileset/Bridge_Wood.png";
+import whisfraudmap from "../map-json/who-is-fraud-map.json";
 import clifftileImage from "../asset-and-tileset/Cliff_Tile.png";
 import farmlandtileImage from "../asset-and-tileset/FarmLand_Tile.png";
-import housewoodbasetileImage from "../asset-and-tileset/House_1_Wood_Base_Blue.png";
 import pathtileImage from "../asset-and-tileset/Path_Tile.png";
 import watertileImage from "../asset-and-tileset/Water_Tile.png";
+import outdoordecortileImage from "../asset-and-tileset/Outdoor_Decor_Free.png";
 
 import playeractifitySpriteSheet from "../asset-and-tileset/Player.png";
 import playerfarmingSpriteSheet from "../asset-and-tileset/Player_Actions.png";
@@ -19,26 +18,37 @@ export default class FisimWhoIsFraudScene extends Phaser.Scene {
   private playerLabel!: Phaser.GameObjects.Text;
   private map!: Phaser.Tilemaps.Tilemap;
 
+  private baseLayer!: Phaser.Tilemaps.TilemapLayer;
+  private stuffandobjectLayer!: Phaser.Tilemaps.TilemapLayer;
+
   // private howtoDefineLayer!: Phaser.Tilemaps.TilemapLayer;
 
-  private initialXSpawnPosition = 243;
-  private initialYSpawnPosition = 310;
+  private initialXSpawnPosition = 300;
+  private initialYSpawnPosition = 200;
   private playerCurrentDirection: "left" | "right" | "front" | "back" = "front";
+
+  private playerCurrentAcifity:
+    | "mining"
+    | "ngapak"
+    | "nyekop"
+    | "nyiram"
+    | "atk" = "atk";
 
   constructor() {
     super("FisimWhoIsFraudScene");
   }
+
   init(data: { accountId: string }) {
     console.log("Scene init data:", data);
   }
+
   preload() {
-    this.load.tilemapTiledJSON("basemap", basemap);
-    this.load.image("Bridge_Wood", bridgewoodtilesetImage);
+    this.load.tilemapTiledJSON("whisfraudmap", whisfraudmap);
     this.load.image("Cliff_Tile", clifftileImage);
     this.load.image("FarmLand_Tile", farmlandtileImage);
-    this.load.image("House_1_Wood_Base_Blue", housewoodbasetileImage);
     this.load.image("Path_Tile", pathtileImage);
     this.load.image("Water_Tile", watertileImage);
+    this.load.image("Outdoor_Decor_Free", outdoordecortileImage);
 
     this.load.spritesheet("player-actifity-ss", playeractifitySpriteSheet, {
       frameWidth: 32,
@@ -51,10 +61,20 @@ export default class FisimWhoIsFraudScene extends Phaser.Scene {
   }
 
   create() {
+    const keyF = this.input.keyboard!.addKey("F");
+    keyF.on("down", () => {
+      if (this.scale.isFullscreen) {
+        this.scale.stopFullscreen();
+      } else {
+        this.scale.startFullscreen();
+      }
+    });
+
     this.setupKeys();
     this.setUpMapAndTileSet();
     this.setupSpriteSheet();
     this.setupPlayer();
+    this.collisionLogic();
   }
 
   update() {
@@ -79,30 +99,10 @@ export default class FisimWhoIsFraudScene extends Phaser.Scene {
       this.player.setVelocityY(speed);
       this.player.anims.play("walk-front", true);
       this.playerCurrentDirection = "front";
+    } else if (this.keys.space.isDown) {
+      this.startActivity();
     } else {
-      if (this.playerCurrentDirection === "front") {
-        this.player.anims.play("idle-front", true);
-      } else if (this.playerCurrentDirection === "back") {
-        this.player.anims.play("idle-back", true);
-      } else if (this.playerCurrentDirection === "right") {
-        this.player.anims.play("idle-right", true);
-      } else if (this.playerCurrentDirection === "left") {
-        this.player.setFlipX(true);
-        this.player.anims.play("idle-right", true);
-      }
-    }
-
-    if (this.keys.space.isDown) {
-      if (this.playerCurrentDirection === "front") {
-        this.player.anims.play("atk-front", true);
-      } else if (this.playerCurrentDirection === "back") {
-        this.player.anims.play("atk-back", true);
-      } else if (this.playerCurrentDirection === "right") {
-        this.player.anims.play("atk-right", true);
-      } else if (this.playerCurrentDirection === "left") {
-        this.player.setFlipX(true);
-        this.player.anims.play("atk-right", true);
-      }
+      this.playIdle();
     }
 
     if (this.player && this.playerLabel) {
@@ -111,26 +111,35 @@ export default class FisimWhoIsFraudScene extends Phaser.Scene {
   }
 
   private setUpMapAndTileSet() {
-    // create map world
-    this.map = this.make.tilemap({ key: "basemap" });
-    const pathTile = this.map.addTilesetImage("Path_Tile", "Path_Tile");
+    this.map = this.make.tilemap({ key: "whisfraudmap" });
     const waterTile = this.map.addTilesetImage("Water_Tile", "Water_Tile");
     const cliffTile = this.map.addTilesetImage("Cliff_Tile", "Cliff_Tile");
-    const houseTile = this.map.addTilesetImage(
-      "House_1_Wood_Base_Blue",
-      "House_1_Wood_Base_Blue"
-    );
     const farmTile = this.map.addTilesetImage("FarmLand_Tile", "FarmLand_Tile");
-    const bridgeTile = this.map.addTilesetImage("Bridge_Wood", "Bridge_Wood");
+    const pathTile = this.map.addTilesetImage("Path_Tile", "Path_Tile");
+    const outdoordecorTile = this.map.addTilesetImage(
+      "Outdoor_Decor_Free",
+      "Outdoor_Decor_Free"
+    );
 
-    this.map.createLayer("base", pathTile!, 0, 0);
-    this.map.createLayer("grassnwater", [waterTile!, cliffTile!], 0, 0);
+    this.baseLayer = this.map.createLayer(
+      "base",
+      [waterTile!, pathTile!],
+      0,
+      0
+    )!;
     this.map.createLayer(
-      "roadnhouse",
-      [pathTile!, cliffTile!, houseTile!, farmTile!, bridgeTile!],
+      "grassandroad",
+      [waterTile!, cliffTile!, pathTile!],
       0,
       0
     );
+    this.map.createLayer("farming", [farmTile!], 0, 0);
+    this.stuffandobjectLayer = this.map.createLayer(
+      "stuffandobject",
+      [cliffTile!, pathTile!, outdoordecorTile!],
+      0,
+      0
+    )!;
   }
 
   private setupSpriteSheet() {
@@ -209,7 +218,7 @@ export default class FisimWhoIsFraudScene extends Phaser.Scene {
       key: "atk-front",
       frames: this.anims.generateFrameNumbers("player-actifity-ss", {
         start: 36,
-        end: 41,
+        end: 39,
       }),
       frameRate: 8,
       repeat: -1,
@@ -218,7 +227,7 @@ export default class FisimWhoIsFraudScene extends Phaser.Scene {
       key: "atk-right",
       frames: this.anims.generateFrameNumbers("player-actifity-ss", {
         start: 42,
-        end: 47,
+        end: 45,
       }),
       frameRate: 8,
       repeat: -1,
@@ -227,10 +236,114 @@ export default class FisimWhoIsFraudScene extends Phaser.Scene {
       key: "atk-back",
       frames: this.anims.generateFrameNumbers("player-actifity-ss", {
         start: 48,
-        end: 53,
+        end: 51,
       }),
       frameRate: 8,
       repeat: -1,
+    });
+
+    // nguli [nyangkul + negapak + ]
+    this.anims.create({
+      key: "mining-right",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 0,
+        end: 1,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "mining-front",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 2,
+        end: 3,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "mining-back",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 4,
+        end: 5,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "ngapak-right",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 6,
+        end: 7,
+      }),
+      frameRate: 4,
+    });
+    this.anims.create({
+      key: "ngapak-front",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 8,
+        end: 9,
+      }),
+      frameRate: 4,
+    });
+    this.anims.create({
+      key: "ngapak-back",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 10,
+        end: 11,
+      }),
+      frameRate: 4,
+    });
+
+    this.anims.create({
+      key: "nyekop-right",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 12,
+        end: 13,
+      }),
+      frameRate: 4,
+    });
+    this.anims.create({
+      key: "nyekop-front",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 14,
+        end: 15,
+      }),
+      frameRate: 4,
+    });
+    this.anims.create({
+      key: "nyekop-back",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 16,
+        end: 17,
+      }),
+      frameRate: 4,
+    });
+
+    this.anims.create({
+      key: "nyiram-front",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 18,
+        end: 19,
+      }),
+      frameRate: 4,
+    });
+    this.anims.create({
+      key: "nyiram-back",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 20,
+        end: 21,
+      }),
+      frameRate: 4,
+    });
+    this.anims.create({
+      key: "nyiram-right",
+      frames: this.anims.generateFrameNumbers("player-farming-ss", {
+        start: 22,
+        end: 23,
+      }),
+      frameRate: 4,
     });
   }
 
@@ -269,14 +382,36 @@ export default class FisimWhoIsFraudScene extends Phaser.Scene {
       right: Phaser.Input.Keyboard.KeyCodes.D,
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
+  }
 
-    const keyF = this.input.keyboard!.addKey("F");
-    keyF.on("down", () => {
-      if (this.scale.isFullscreen) {
-        this.scale.stopFullscreen();
-      } else {
-        this.scale.startFullscreen();
-      }
-    });
+  private playIdle() {
+    if (this.playerCurrentDirection === "front") {
+      this.player.anims.play("idle-front", true);
+    } else if (this.playerCurrentDirection === "back") {
+      this.player.anims.play("idle-back", true);
+    } else if (this.playerCurrentDirection === "right") {
+      this.player.anims.play("idle-right", true);
+    } else if (this.playerCurrentDirection === "left") {
+      this.player.setFlipX(true);
+      this.player.anims.play("idle-right", true);
+    }
+  }
+
+  private startActivity() {
+    const type = this.playerCurrentAcifity;
+    const dir = this.playerCurrentDirection;
+    const flipLeft = dir === "left";
+    this.player.setFlipX(flipLeft);
+    const animKey = `${type}-${flipLeft ? "right" : dir}`;
+    this.player.anims.play(animKey, true);
+  }
+
+  private collisionLogic() {
+    this.baseLayer!.setCollisionByProperty({ drownable: true });
+    this.stuffandobjectLayer!.setCollisionByProperty({ collision: true });
+    this.physics.add.collider(this.player, [
+      this.baseLayer!,
+      this.stuffandobjectLayer!,
+    ]);
   }
 }

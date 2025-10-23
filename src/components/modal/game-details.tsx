@@ -15,7 +15,8 @@ export default function ModalGameDetails() {
 
   function handleStart() {
     setModalKind(null);
-    navigate("/play-fisim");
+    if (!gameCoverManagement.data.slash) return
+    navigate(gameCoverManagement.data.slash);
   }
 
   return (

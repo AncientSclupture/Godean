@@ -12,13 +12,15 @@ export type GameTransitionDataContextType = {
             description: string | null;
             imageplaceholder: string | null;
             reward: number | null;
+            slash: string | null;
         };
         reseter: () => void;
         setter: (
             name: string | null,
             description: string | null,
             imageplaceholder: string | null,
-            reward: number | null
+            reward: number | null,
+            slash: string | null
         ) => void;
     };
 };
@@ -29,7 +31,7 @@ export const GameTransitionDataContext = createContext<GameTransitionDataContext
     setRequiredId: () => { },
     setAliasPlayer: () => { },
     gameCoverManagement: {
-        data: { name: null, description: null, imageplaceholder: null, reward: null },
+        data: { name: null, description: null, imageplaceholder: null, reward: null, slash: null },
         reseter: () => { },
         setter: () => { },
     },
@@ -43,11 +45,13 @@ export const GameTransitionDataProvider: React.FC<{ children: React.ReactNode }>
         description: string | null;
         imageplaceholder: string | null;
         reward: number | null;
+        slash: string | null;
     }>({
         name: null,
         description: null,
         imageplaceholder: null,
         reward: null,
+        slash: null
     });
 
     const changeRequiredId = (d: string | null) => {
@@ -62,13 +66,14 @@ export const GameTransitionDataProvider: React.FC<{ children: React.ReactNode }>
         name: string | null,
         description: string | null,
         imageplaceholder: string | null,
-        reward: number | null
+        reward: number | null,
+        slash: string | null
     ) => {
-        setGameCoverData({ name, description, imageplaceholder, reward });
+        setGameCoverData({ name, description, imageplaceholder, reward, slash });
     };
 
     const resetGameCover = () => {
-        setGameCoverData({ name: null, description: null, imageplaceholder: null, reward: null });
+        setGameCoverData({ name: null, description: null, imageplaceholder: null, reward: null, slash: null });
     };
 
     return (

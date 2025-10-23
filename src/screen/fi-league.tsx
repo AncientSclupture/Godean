@@ -7,27 +7,31 @@ const FinanceLeagueData: {
     description: string;
     imageCover: string;
     reward: number;
+    slash: string;
 }[] = [
         {
             id: "test-123",
             name: "Who Is Fraud and Why?",
             description: "Uji kemampuanmu dalam mengenali perusahaan palsu! Pelajari tanda-tanda penipuan berkedok investasi, MLM, dan ponzi melalui simulasi interaktif dan studi kasus nyata.",
             imageCover: "./finance-game-cover.jpeg",
-            reward: 10
+            reward: 10,
+            slash: "/play-fisim-whoisfraud",
         },
         {
             id: "test-123",
             name: "Do i know how to invest properly?",
             description: "Tantang dirimu dalam membuat keputusan investasi yang bijak. Pelajari prinsip dasar investasi sehat, manajemen risiko, dan cara membedakan peluang dari jebakan finansial.",
             imageCover: "./finance-game-cover.jpeg",
-            reward: 20
+            reward: 20,
+            slash: "/play-fisim-doiknow",
         },
         {
             id: "test-123",
             name: "Real Investment Simulation",
             description: "Masuki dunia simulasi investasi nyata! Bangun portofolio, analisis pasar, dan lihat bagaimana strategi keuanganmu bertahan dalam kondisi ekonomi yang dinamis.",
             imageCover: "./finance-game-cover.jpeg",
-            reward: 30
+            reward: 30,
+            slash: "/play-fisim-realinvestment",
         }
     ]
 
@@ -66,6 +70,7 @@ export default function FinanceLeagueScreen() {
                                 description={d.description}
                                 imageCover={d.imageCover}
                                 reward={d.reward}
+                                slash={d.slash}
                             />
                         )}
                     </div>
