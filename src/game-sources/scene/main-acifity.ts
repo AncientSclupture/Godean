@@ -9,7 +9,7 @@ import farmlandtileImage from "../asset-and-tileset/FarmLand_Tile.png";
 import housewoodbasetileImage from "../asset-and-tileset/House_1_Wood_Base_Blue.png";
 import pathtileImage from "../asset-and-tileset/Path_Tile.png";
 import watertileImage from "../asset-and-tileset/Water_Tile.png";
-import oaktreetileImage from "../asset-and-tileset/Oak_Tree_Small.png";
+import oaktreetileImage from "../asset-and-tileset/Oak_Tree.png";
 import outdordecortileImage from "../asset-and-tileset/Outdoor_Decor_Free.png";
 
 import playeractifitySpriteSheet from "../asset-and-tileset/Player.png";
@@ -21,6 +21,8 @@ export default class MainActifityScene extends Phaser.Scene {
   private playerLabel!: Phaser.GameObjects.Text;
   private map!: Phaser.Tilemaps.Tilemap;
   private roadnhouselayer!: Phaser.Tilemaps.TilemapLayer;
+  private grassnwaterlayer!: Phaser.Tilemaps.TilemapLayer;
+  private summoninglayer!: Phaser.Tilemaps.TilemapLayer;
   private inventoryBar!: Phaser.GameObjects.Container;
   private inventorySlots: {
     name: string;
@@ -30,11 +32,12 @@ export default class MainActifityScene extends Phaser.Scene {
   private selectedPlant: "carrot" | "turnip" | "wheat" = "wheat";
   private showBar: "inventory" | "wallet" | "" = "";
   private farmOverlay!: Phaser.GameObjects.Graphics;
+  private farmTreshHold: Map<string, number> = new Map();
 
   // private howtoDefineLayer!: Phaser.Tilemaps.TilemapLayer;
 
-  private initialXSpawnPosition = 243;
-  private initialYSpawnPosition = 310;
+  private initialXSpawnPosition = 300;
+  private initialYSpawnPosition = 320;
   private playerCurrentDirection: "left" | "right" | "front" | "back" = "front";
   private playerCurrentAcifity:
     | "mining"
@@ -59,7 +62,7 @@ export default class MainActifityScene extends Phaser.Scene {
     this.load.image("House_1_Wood_Base_Blue", housewoodbasetileImage);
     this.load.image("Path_Tile", pathtileImage);
     this.load.image("Water_Tile", watertileImage);
-    this.load.image("Oak_Tree_Small", oaktreetileImage);
+    this.load.image("Oak_Tree", oaktreetileImage);
     // this.load.image("Outdoor_Decor_Free", outdordecortileImage);
 
     this.load.spritesheet("player-actifity-ss", playeractifitySpriteSheet, {
@@ -165,15 +168,22 @@ export default class MainActifityScene extends Phaser.Scene {
     const farmTile = this.map.addTilesetImage("FarmLand_Tile", "FarmLand_Tile");
     const bridgeTile = this.map.addTilesetImage("Bridge_Wood", "Bridge_Wood");
     this.map.addTilesetImage("Outdoor_Decor_Free", "Outdoor_Decor_Free");
+    const owaktreeTile = this.map.addTilesetImage("Oak_Tree", "Oak_Tree");
 
     this.map.createLayer("base", pathTile!, 0, 0);
-    this.map.createLayer("grassnwater", [waterTile!, cliffTile!], 0, 0)!;
+    this.grassnwaterlayer = this.map.createLayer(
+      "grassnwater",
+      [waterTile!, cliffTile!],
+      0,
+      0
+    )!;
     this.roadnhouselayer = this.map.createLayer(
       "roadnhouse",
       [pathTile!, cliffTile!, houseTile!, farmTile!, bridgeTile!],
       0,
       0
     )!;
+    this.summoninglayer = this.map.createLayer("summoning", owaktreeTile!)!;
   }
 
   private setupPlayer() {
@@ -278,7 +288,13 @@ export default class MainActifityScene extends Phaser.Scene {
 
   private collisionLogic() {
     this.roadnhouselayer!.setCollisionByProperty({ collision: true });
-    this.physics.add.collider(this.player, this.roadnhouselayer!);
+    this.summoninglayer!.setCollisionByProperty({ cutable: true });
+    this.grassnwaterlayer!.setCollisionByProperty({ swimable: true });
+    this.physics.add.collider(this.player, [
+      this.roadnhouselayer!,
+      this.summoninglayer!,
+      this.grassnwaterlayer!,
+    ]);
   }
 
   private showBarHandler() {
@@ -314,18 +330,23 @@ export default class MainActifityScene extends Phaser.Scene {
       const worldY = this.map.tileToWorldY(playerTileY!);
       const tileSize = this.map.tileWidth;
 
-      this.farmOverlay.fillStyle(0x00ff00, 0.3);
+      const tileKey = `${playerTileX},${playerTileY}`;
+      const progress = this.farmTreshHold.get(tileKey) || 0;
+
+      const rectColor = progress < 20.0 ? 0xa9a9a9 : 0x00ff00;
+
+      this.farmOverlay.fillStyle(rectColor, 0.3 + progress * 0.4);
       this.farmOverlay.fillRect(worldX!, worldY!, tileSize, tileSize);
-      this.farmOverlay.lineStyle(1, 0x00ff00, 0.8);
+      this.farmOverlay.lineStyle(1, rectColor, 0.8);
       this.farmOverlay.strokeRect(worldX!, worldY!, tileSize, tileSize);
 
       this.farmOverlay.setVisible(true);
     } else {
+      this.playerCurrentAcifity = "atk";
       this.showBar = "";
       this.farmOverlay.setVisible(false);
     }
 
-    // Atur posisi inventory bar
     if (this.player && this.inventoryBar && this.showBar === "inventory") {
       this.inventoryBar.setPosition(this.player.x - 40, this.player.y + 25);
       this.inventoryBar.setVisible(true);
@@ -561,13 +582,44 @@ export default class MainActifityScene extends Phaser.Scene {
 
     const animKey = `${type}-${flipLeft ? "right" : dir}`;
 
+    // Cek tile di depan pemain
+    let offsetX = 0;
+    let offsetY = 0;
+
+    switch (dir) {
+      case "front":
+        offsetY = 1;
+        break;
+      case "back":
+        offsetY = -1;
+        break;
+      case "left":
+        offsetX = -1;
+        break;
+      case "right":
+        offsetX = 1;
+        break;
+    }
+
+    const playerTileX = this.map.worldToTileX(this.player.x);
+    const playerTileY = this.map.worldToTileY(this.player.y);
+    const targetTileX = playerTileX! + offsetX;
+    const targetTileY = playerTileY! + offsetY;
+
+    const tileKey = `${targetTileX},${targetTileY}`;
+
+    if (type === "nyekop") {
+      const currentValue = this.farmTreshHold.get(tileKey) || 0;
+      const newValue = Math.min(currentValue + 0.1, 20.0);
+      this.farmTreshHold.set(tileKey, newValue);
+    }
+
     this.player.anims.play(animKey, true);
   }
 
   private plantSomething(name: string) {
-    let id: number = 20; // default wheat
+    let id: number = 20;
 
-    // Tentukan offset tile (bukan pixel)
     let offsetTileX = 0;
     let offsetTileY = 0;
 
@@ -586,13 +638,18 @@ export default class MainActifityScene extends Phaser.Scene {
         break;
     }
 
-    // Ambil posisi tile tempat player berdiri
     const playerTileX = this.map.worldToTileX(this.player.x);
     const playerTileY = this.map.worldToTileY(this.player.y);
 
-    // Tentukan tile target di depan player
     const targetTileX = playerTileX! + offsetTileX;
     const targetTileY = playerTileY! + offsetTileY;
+    const tileKey = `${targetTileX},${targetTileY}`;
+
+    const progress = this.farmTreshHold.get(tileKey) || 0;
+
+    if (progress < 20.0) {
+      return;
+    }
 
     switch (name.toLowerCase()) {
       case "carrot":
@@ -605,7 +662,6 @@ export default class MainActifityScene extends Phaser.Scene {
         id = 13;
         break;
       default:
-        console.log(`Unknown plant: ${name}, using default (wheat)`);
         id = 20;
         break;
     }
@@ -615,6 +671,8 @@ export default class MainActifityScene extends Phaser.Scene {
 
     const plant = this.add.sprite(worldX, worldY, "Outdoor_Decor_Free");
     plant.setFrame(id);
+
+    this.farmTreshHold.set(tileKey, 0);
 
     return plant;
   }
