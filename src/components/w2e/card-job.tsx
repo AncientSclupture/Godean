@@ -92,7 +92,7 @@ export default function CardJob({ item }: { item: WorkToEarnItem }) {
                             }}
                             className="background-dark text-white py-2 px-4 rounded-lg text-sm transition-colors"
                         >
-                            Apply Now
+                            Claim
                         </button>
                     </div>
                 </div>

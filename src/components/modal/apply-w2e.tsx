@@ -47,7 +47,7 @@ export default function ModalApplyW2E() {
                 <div className="px-6 py-5 space-y-5 text-gray-700">
                     <div className="flex items-center gap-2 text-sm text-gray-500">
                         <Users className="h-4 w-4" />
-                        <span>{w2eApplyManagement.data.biddersCount} bidder sedang apply untuk project ini</span>
+                        <span>{w2eApplyManagement.data.biddersCount} jumlah saingan bidder project ini</span>
                     </div>
 
                     <div>
@@ -99,7 +99,7 @@ export default function ModalApplyW2E() {
                         onClick={() => handleSubmit(w2eApplyManagement.data.contract)}
                         className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm transition"
                     >
-                        Unduh Kontrak
+                        Klaim Kontrak
                     </button>
                 </div>
             </div>
