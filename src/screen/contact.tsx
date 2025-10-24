@@ -47,8 +47,8 @@ export default function ContactScreen() {
                 <section className="w-full bg-[#00081a] text-white py-20 text-center bg-[url('/images/farm-contact.jpg')] bg-cover bg-center relative">
                 <div className="absolute inset-0 bg-black/50" />
                 <div className="relative z-10 max-w-2xl mx-auto px-4">
-                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-                    Contact the Nanduria Team
+                    <h1 className="text-emerald-700 text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
+                    Contact the Godean Team
                     </h1>
                     <p className="text-gray-200 text-lg">
                     Have questions, feedback, or partnership ideas?  

@@ -65,10 +65,10 @@ export default function AboutGameScreen() {
                 </section>
 
                 {/* CTA Section */}
-                <section className="w-full bg-emerald-600 py-16 text-center text-white">
+                <section className="w-full bg-white py-16 text-center text-black">
                 <h2 className="text-3xl font-bold mb-4">Ready to Grow Your Fortune?</h2>
                 <p className="mb-6 text-lg">Start your journey in Godean today.</p>
-                <Link to="/play" className="bg-white text-emerald-600 font-semibold px-8 py-3 rounded-lg hover:bg-emerald-100 transition">
+                <Link to="/play" className="text-white font-semibold px-8 py-3 rounded-lg bg-emerald-500 hover:bg-emerald-700 transition">
                     Play Now
                 </Link>
                 </section>
