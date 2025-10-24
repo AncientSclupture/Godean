@@ -5,7 +5,7 @@ type BotState = "idle" | "walk" | "attack" | "dead";
 
 export default class SkeletonBot extends Phaser.Physics.Arcade.Sprite {
   private sceneRef: Phaser.Scene;
-  private player: Phaser.Physics.Arcade.Sprite;;
+  private player: Phaser.Physics.Arcade.Sprite;
   private speed: number = 70;
   private direction: Direction = "front";
   private botState: BotState = "idle";

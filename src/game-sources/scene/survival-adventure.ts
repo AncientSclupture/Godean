@@ -15,7 +15,7 @@ import slimespritesheettileImage from "../asset-and-tileset/Slime_Green.png";
 
 import playeractifitySpriteSheet from "../asset-and-tileset/Player.png";
 import playerfarmingSpriteSheet from "../asset-and-tileset/Player_Actions.png";
-import SkeletonBot from "./SkeletonBot";
+import SkeletonBot from "./game-bot/SkeletonBot";
 
 export default class SurvivalAdvantureScene extends Phaser.Scene {
   private keys!: any;
