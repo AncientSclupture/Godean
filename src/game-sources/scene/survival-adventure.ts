@@ -10,9 +10,12 @@ import watertileImage from "../asset-and-tileset/Water_Tile.png";
 import chesttileImage from "../asset-and-tileset/Chest.png";
 import oaktreetileImage from "../asset-and-tileset/Oak_Tree.png";
 import outdoordecortileImage from "../asset-and-tileset/Outdoor_Decor_Free.png";
+import skeletonspritesheettileImage from "../asset-and-tileset/Skeleton.png";
+import slimespritesheettileImage from "../asset-and-tileset/Slime_Green.png";
 
 import playeractifitySpriteSheet from "../asset-and-tileset/Player.png";
 import playerfarmingSpriteSheet from "../asset-and-tileset/Player_Actions.png";
+import SkeletonBot from "./SkeletonBot";
 
 export default class SurvivalAdvantureScene extends Phaser.Scene {
   private keys!: any;
@@ -22,6 +25,8 @@ export default class SurvivalAdvantureScene extends Phaser.Scene {
 
   private stuffLayer!: Phaser.Tilemaps.TilemapLayer;
   private baseLayer!: Phaser.Tilemaps.TilemapLayer;
+
+  private bots: SkeletonBot[] = [];
 
   // private howtoDefineLayer!: Phaser.Tilemaps.TilemapLayer;
 
@@ -61,6 +66,14 @@ export default class SurvivalAdvantureScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
+    this.load.spritesheet("skleton-actifity-ss", skeletonspritesheettileImage, {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("slime-actifity-ss", slimespritesheettileImage, {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
   }
 
   create() {
@@ -78,6 +91,17 @@ export default class SurvivalAdvantureScene extends Phaser.Scene {
     this.setupSpriteSheet();
     this.setupPlayer();
     this.collisionLogic();
+
+    for (let i = 0; i < 8; i++) {
+      const x = Phaser.Math.Between(100, 700);
+      const y = Phaser.Math.Between(100, 500);
+      const bot = new SkeletonBot(this, x, y, this.player);
+      this.bots.push(bot);
+
+      // Biar tidak nabrak sesama skeleton
+      this.physics.add.collider(bot, this.player);
+      this.physics.add.collider(bot, this.bots);
+    }
   }
 
   update() {
@@ -111,6 +135,8 @@ export default class SurvivalAdvantureScene extends Phaser.Scene {
     if (this.player && this.playerLabel) {
       this.playerLabel.setPosition(this.player.x, this.player.y - 20);
     }
+
+    this.bots.forEach((bot) => bot.update());
   }
 
   private setUpMapAndTileSet() {
@@ -125,12 +151,7 @@ export default class SurvivalAdvantureScene extends Phaser.Scene {
       "Outdoor_Decor_Free"
     );
 
-    this.baseLayer = this.map.createLayer(
-      "base",
-      [waterTile!, cliffTile!],
-      0,
-      0
-    )!;
+    this.baseLayer = this.map.createLayer("base", [waterTile!], 0, 0)!;
     this.map.createLayer("ground", [waterTile!, cliffTile!], 0, 0)!;
     this.stuffLayer = this.map.createLayer(
       "stuff",
@@ -343,6 +364,96 @@ export default class SurvivalAdvantureScene extends Phaser.Scene {
       }),
       frameRate: 4,
     });
+
+    // skleton idle
+    this.anims.create({
+      key: "skleton-idle-front",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 12,
+    });
+    this.anims.create({
+      key: "skleton-idle-right",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 6,
+        end: 11,
+      }),
+      frameRate: 12,
+    });
+    this.anims.create({
+      key: "skleton-idle-back",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 12,
+        end: 17,
+      }),
+      frameRate: 12,
+    });
+
+    // skleton walk
+    this.anims.create({
+      key: "skleton-walk-front",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 18,
+        end: 23,
+      }),
+      frameRate: 12,
+    });
+    this.anims.create({
+      key: "skleton-walk-right",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 24,
+        end: 29,
+      }),
+      frameRate: 12,
+    });
+    this.anims.create({
+      key: "skleton-walk-back",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 30,
+        end: 35,
+      }),
+      frameRate: 12,
+    });
+    // attack
+    this.anims.create({
+      key: "skleton-atk-front",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 36,
+        end: 39,
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "skleton-atk-right",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 42,
+        end: 45,
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "skleton-atk-back",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 48,
+        end: 51,
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
+
+    // skleton
+    this.anims.create({
+      key: "skleton-dead",
+      frames: this.anims.generateFrameNumbers("skleton-actifity-ss", {
+        start: 54,
+        end: 58,
+      }),
+      frameRate: 8,
+    });
   }
 
   private setupPlayer() {
@@ -374,7 +485,7 @@ export default class SurvivalAdvantureScene extends Phaser.Scene {
   private collisionLogic() {
     this.baseLayer!.setCollisionByProperty({ drownable: true });
     this.stuffLayer!.setCollisionByProperty({ collision: true, cutable: true });
-    this.physics.add.collider(this.player, [this.baseLayer!, this.stuffLayer!]);
+    this.physics.add.collider(this.player, [this.stuffLayer!, this.baseLayer!]);
   }
 
   private setupKeys() {
