@@ -44,11 +44,11 @@ export default function ContactScreen() {
         <MainLayout needProtection={false}>
             <div className="w-full min-h-screen flex flex-col bg-gradient-to-b from-emerald-50 to-emerald-100 text-gray-800">
                 {/* Hero Section */}
-                <section className="w-full py-20 text-center bg-[url('/images/farm-contact.jpg')] bg-cover bg-center relative">
+                <section className="w-full bg-[#00081a] text-white py-20 text-center bg-[url('/images/farm-contact.jpg')] bg-cover bg-center relative">
                 <div className="absolute inset-0 bg-black/50" />
                 <div className="relative z-10 max-w-2xl mx-auto px-4">
-                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-                    Contact the Nanduria Team
+                    <h1 className="text-emerald-700 text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
+                    Contact the Godean Team
                     </h1>
                     <p className="text-gray-200 text-lg">
                     Have questions, feedback, or partnership ideas?  
@@ -58,8 +58,8 @@ export default function ContactScreen() {
                 </section>
 
                 {/* Contact Form Section */}
-                <section className="flex-grow w-full py-16">
-                <div className="max-w-4xl mx-auto px-6 bg-white shadow-md rounded-2xl p-8">
+                <section className=" bg-white flex-grow w-full py-16">
+                <div className="max-w-4xl mx-auto px-6 bg-[#00081a] text-white shadow-md rounded-2xl p-8">
                     <h2 className="text-2xl font-bold text-emerald-700 mb-6 text-center">
                     Send us a message 🌾
                     </h2>
@@ -74,7 +74,7 @@ export default function ContactScreen() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400 placeholder-gray-400"
                         />
                     </div>
                     <div>
@@ -86,7 +86,7 @@ export default function ContactScreen() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400 placeholder-gray-400"
                         />
                     </div>
                     <div>
@@ -98,7 +98,7 @@ export default function ContactScreen() {
                         value={formData.message}
                         onChange={handleChange}
                         required
-                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400 placeholder-gray-400"
                         />
                     </div>
                     <div className="text-center">
@@ -135,7 +135,7 @@ export default function ContactScreen() {
                 </section>
 
                 {/* Social Links */}
-                <section className="w-full bg-emerald-600 py-12 text-center text-white">
+                <section className="bg-[#00081a] w-full py-12 text-center text-white">
                 <h2 className="text-2xl font-bold mb-4">Connect with Us</h2>
                 <p className="mb-6 text-gray-100">
                     Join our growing decentralized community:

@@ -7,29 +7,29 @@ import {ChevronDown, ChevronUp} from "lucide-react";
 
 const FAQS = [
     {
-        question: "What is Nanduria?",
+        question: "What is Godean-FI?",
         answer:
-        "Nanduria is a play-to-earn (P2E) and work-to-earn (W2E) finance simulation game inspired by Harvest Moon. You cultivate digital lands, trade crops, manage crypto-based assets, and grow your virtual economy in a blockchain-powered world.",
+        "Godean-FI is a play-to-earn (P2E) and work-to-earn (W2E) finance simulation game inspired by Harvest Moon. You cultivate digital lands, trade crops, manage crypto-based assets, and grow your virtual economy in a blockchain-powered world.",
     },
     {
-        question: "How do I earn in Nanduria?",
+        question: "How do I earn in Godean-FI?",
         answer:
         "Players earn by completing quests, farming virtual goods, and participating in decentralized markets. Your in-game productivity translates to real crypto rewards based on your performance and community engagement.",
     },
     {
-        question: "Is Nanduria free to play?",
+        question: "Is Godean-FI free to play?",
         answer:
-        "Yes, Nanduria offers a free-to-play entry mode. Players can start with basic land plots and tools, and later expand their holdings or enhance productivity using NFT-based assets.",
+        "Yes, Godean-FI offers a free-to-play entry mode. Players can start with basic land plots and tools, and later expand their holdings or enhance productivity using NFT-based assets.",
     },
     {
-        question: "What blockchain does Nanduria use?",
+        question: "What blockchain does Godean-FI use?",
         answer:
-        "Nanduria is built on a sustainable Layer-2 blockchain that supports fast transactions and low fees. This ensures smooth in-game trading and environmentally conscious gameplay.",
+        "Godean-FI is built on a sustainable Layer-2 blockchain that supports fast transactions and low fees. This ensures smooth in-game trading and environmentally conscious gameplay.",
     },
     {
         question: "Can I trade or sell my in-game assets?",
         answer:
-        "Absolutely. All major in-game items are represented as NFTs, allowing you to buy, sell, or trade them with other players in the Nanduria marketplace or on supported external NFT exchanges.",
+        "Absolutely. All major in-game items are represented as NFTs, allowing you to buy, sell, or trade them with other players in the Godean-FI marketplace or on supported external NFT exchanges.",
     },
 ];
 
@@ -43,7 +43,7 @@ export default function FaQScreen() {
 
     return (
          <MainLayout needProtection={false}>
-            <div className="min-h-screen w-full bg-gradient-to-b from-emerald-50 to-emerald-100 py-16 px-6 flex flex-col items-center">
+            <div className="min-h-screen w-full py-16 px-6 flex flex-col items-center">
                 <motion.h1
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
